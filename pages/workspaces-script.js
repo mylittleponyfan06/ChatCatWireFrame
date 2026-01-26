@@ -45,6 +45,41 @@ function switchScreen(screenName) {
   }
 }
 
+// Switch to a specific category and show Files screen
+let currentCategory = 'Drafts';
+
+function switchToCategory(categoryName) {
+  currentCategory = categoryName;
+  const filesSectionName = document.getElementById('files-section-name');
+  if (filesSectionName) {
+    filesSectionName.textContent = categoryName;
+  }
+  
+  // Show appropriate view based on category
+  const incomingView = document.getElementById('files-incoming-view');
+  const draftsView = document.getElementById('files-drafts-view');
+  const exportView = document.getElementById('files-export-view');
+  
+  if (categoryName === 'Incoming Files') {
+    // Show incoming files with drag-drop and categories
+    if (incomingView) incomingView.style.display = 'block';
+    if (draftsView) draftsView.style.display = 'none';
+    if (exportView) exportView.style.display = 'none';
+  } else if (categoryName === 'Final Deliverables') {
+    // Show export interface for Final Deliverables
+    if (incomingView) incomingView.style.display = 'none';
+    if (draftsView) draftsView.style.display = 'none';
+    if (exportView) exportView.style.display = 'block';
+  } else {
+    // Show version/draft management for other categories (Drafts, Slides, References)
+    if (incomingView) incomingView.style.display = 'none';
+    if (draftsView) draftsView.style.display = 'block';
+    if (exportView) exportView.style.display = 'none';
+  }
+  
+  switchScreen('files');
+}
+
 // Toggle all file checkboxes with visual feedback
 function toggleAllCheckboxes() {
   const checkboxes = document.querySelectorAll('.file-checkbox');

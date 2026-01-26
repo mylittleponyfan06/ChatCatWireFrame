@@ -47,7 +47,10 @@
       <div class="workspace-screen active" id="screen-overview">
         <header class="topbar">
           <h2>Projects</h2>
-          <button class="primary" id="newProjectBtn">+ New</button>
+          <div class="topbar__actions">
+            <button class="ghost">Add Files</button>
+            <button class="primary" id="newProjectBtn">+ New</button>
+          </div>
         </header>
         
         <section class="panel">
@@ -75,7 +78,7 @@
               </div>
             </div>
 
-            <div class="project-card" onclick="switchScreen('files')">
+            <div class="project-card" onclick="switchScreen('categories')">
               <div class="project-header">
                 <div>
                   <h4 class="project-name">PFM Group Project 2</h4>
@@ -98,7 +101,7 @@
               </div>
             </div>
 
-            <div class="project-card">
+            <div class="project-card" onclick="switchScreen('categories')">
               <div class="project-header">
                 <div>
                   <h4 class="project-name">PFM Group Project 3</h4>
@@ -130,61 +133,66 @@
           <div class="breadcrumbs">
             <span class="breadcrumb-item" onclick="switchScreen('overview')">Projects</span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item" onclick="switchScreen('overview')">PFM Group Project 1</span>
+            <span class="breadcrumb-item">PFM Group Project 1</span>
           </div>
           <div class="topbar__actions">
-            <button class="ghost" onclick="switchScreen('overview')">Back</button>
+            <button class="ghost">Add Files</button>
           </div>
         </header>
 
-        <section class="panel">
-          <h3>Incoming Files</h3>
-          <p class="muted">Drag and drop your files to the categories below! Click on any file to see more information.</p>
-          
-          <div class="incoming-files-preview">
-            <div class="file-placeholder">📄</div>
-            <div class="file-placeholder">📄</div>
-            <div class="file-placeholder">📄</div>
-            <div class="file-placeholder">📄</div>
-            <div class="file-placeholder">📄</div>
-          </div>
+        <section class="panel" style="margin-bottom: 20px;">
+          <h4 style="margin: 0 0 8px;">Import WhatsApp Chat Backup</h4>
+          <p class="muted" style="margin: 0 0 16px;">Last imported: --</p>
+          <button class="ghost" onclick="switchScreen('import')">Import</button>
+        </section>
 
-          <h3 style="margin-top: 32px;">Categories</h3>
+        <section class="panel" style="margin-bottom: 20px; background: rgba(88, 198, 255, 0.05);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3 style="margin: 0 0 4px;">Incoming Files</h3>
+              <p class="muted" style="margin: 0;">5 files need categorization</p>
+            </div>
+            <button class="ghost" onclick="switchToCategory('Incoming Files')">Review</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3 style="margin: 0 0 16px;">Categories</h3>
           <div class="categories-grid">
-            <div class="category-card">
+            <div class="category-card" onclick="switchToCategory('Drafts')">
               <div class="category-name">Drafts</div>
               <div class="category-placeholder">
                 <p>📄</p>
                 <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
               </div>
-              <button class="ghost" style="width: 100%; margin-top: 12px;">+ Add files</button>
+              <p class="muted" style="font-size: 12px; margin-top: 12px; text-align: center;">... and 10 more</p>
             </div>
 
-            <div class="category-card">
+            <div class="category-card" onclick="switchToCategory('Slides')">
               <div class="category-name">Slides</div>
               <div class="category-placeholder">
                 <p>📊</p>
                 <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
               </div>
-              <button class="ghost" style="width: 100%; margin-top: 12px;">+ Add files</button>
+              <p class="muted" style="font-size: 12px; margin-top: 12px; text-align: center;">... and 10 more</p>
             </div>
 
-            <div class="category-card">
+            <div class="category-card" onclick="switchToCategory('References')">
               <div class="category-name">References</div>
               <div class="category-placeholder">
                 <p>📚</p>
                 <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
               </div>
-              <button class="ghost" style="width: 100%; margin-top: 12px;">+ Add files</button>
+              <p class="muted" style="font-size: 12px; margin-top: 12px; text-align: center;">... and 10 more</p>
             </div>
 
-            <div class="category-card">
+            <div class="category-card" onclick="switchToCategory('Final Deliverables')">
               <div class="category-name">Final Deliverables</div>
               <div class="category-placeholder">
                 <p>✓</p>
                 <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
               </div>
-              <button class="ghost" style="width: 100%; margin-top: 12px;">+ Add files</button>
+              <p class="muted" style="font-size: 12px; margin-top: 12px; text-align: center;">... and 10 more</p>
             </div>
           </div>
         </section>
@@ -199,6 +207,7 @@
             <span class="breadcrumb-item">PFM Group Project 1</span>
           </div>
           <div class="topbar__actions">
+            <button class="ghost">Add Files</button>
             <button class="ghost" onclick="switchScreen('overview')">Back</button>
           </div>
         </header>
@@ -271,105 +280,215 @@
         </section>
       </div>
 
-      <!-- SCREEN 4: Files/Deliverables List -->
+      <!-- SCREEN 4: Files/Drafts Management -->
       <div class="workspace-screen" id="screen-files">
         <header class="topbar">
           <div class="breadcrumbs">
             <span class="breadcrumb-item" onclick="switchScreen('overview')">Projects</span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item" onclick="switchScreen('categories')">PFM Group Project 2</span>
+            <span class="breadcrumb-item" onclick="switchScreen('categories')">PFM Group Project 1</span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item">Incoming Files</span>
+            <span class="breadcrumb-item" id="files-section-name">Drafts</span>
           </div>
           <div class="topbar__actions">
-            <button class="ghost" onclick="switchScreen('overview')">Back</button>
+            <button class="ghost">Add Files</button>
+            <button class="ghost" onclick="switchScreen('categories')">Back</button>
           </div>
         </header>
 
         <section class="panel">
-          <div class="files-toolbar">
-            <div class="files-toolbar-actions">
-              <button class="primary" onclick="toggleAllCheckboxes()">Export Selected</button>
-              <button class="secondary">Export All</button>
-              <input type="text" placeholder="Search files..." class="files-search" />
-            </div>
-          </div>
+          <!-- INCOMING FILES VIEW -->
+          <div id="files-incoming-view" style="display: none;">
+            <p class="muted" style="margin: 0 0 16px;">Drag and drop your files to the categories below! Click on any file to view more information.</p>
 
-          <div class="files-list">
-            <div class="file-row">
-              <div class="file-checkbox-wrapper">
-                <input type="checkbox" class="file-checkbox" />
-              </div>
-              <div class="file-info">
-                <div class="file-name">Slides.pptx</div>
-                <div class="file-meta">Sent by You • Latest</div>
-              </div>
-              <div class="file-actions">
-                <span class="file-date">10 September 2025, 11:30 PM</span>
-                <button class="ghost">Export</button>
-              </div>
+            <div class="incoming-files-preview" style="margin-bottom: 32px;">
+              <div class="file-placeholder">📄</div>
+              <div class="file-placeholder">📄</div>
+              <div class="file-placeholder">📄</div>
+              <div class="file-placeholder">📄</div>
             </div>
 
-            <div class="file-row">
-              <div class="file-checkbox-wrapper">
-                <input type="checkbox" class="file-checkbox" />
+            <h3 style="margin-bottom: 16px;">Categories</h3>
+            <div class="categories-grid">
+              <div class="category-card">
+                <div class="category-name">Drafts</div>
+                <div class="category-placeholder">
+                  <p>📄</p>
+                  <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+                </div>
+                <p class="muted" style="font-size: 12px; margin-top: 12px; text-align: center;">... and 10 more</p>
               </div>
-              <div class="file-info">
-                <div class="file-name">Report.docx</div>
-                <div class="file-meta">Sent by Charlotte • Latest</div>
-              </div>
-              <div class="file-actions">
-                <span class="file-date">11 September 2025, 12:30 PM</span>
-                <button class="ghost">Export</button>
-              </div>
-            </div>
 
-            <div class="file-row">
-              <div class="file-checkbox-wrapper">
-                <input type="checkbox" class="file-checkbox" />
+              <div class="category-card">
+                <div class="category-name">Slides</div>
+                <div class="category-placeholder">
+                  <p>📊</p>
+                  <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+                </div>
+                <p class="muted" style="font-size: 12px; margin-top: 12px; text-align: center;">... and 10 more</p>
               </div>
-              <div class="file-info">
-                <div class="file-name">Spreadsheet.xlsx</div>
-                <div class="file-meta">Sent by Coco • Latest</div>
-              </div>
-              <div class="file-actions">
-                <span class="file-date">11 September 2025, 01:30 PM</span>
-                <button class="ghost">Export</button>
-              </div>
-            </div>
 
-            <div class="file-row">
-              <div class="file-checkbox-wrapper">
-                <input type="checkbox" class="file-checkbox" />
+              <div class="category-card">
+                <div class="category-name">References</div>
+                <div class="category-placeholder">
+                  <p>📚</p>
+                  <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+                </div>
+                <p class="muted" style="font-size: 12px; margin-top: 12px; text-align: center;">... and 10 more</p>
               </div>
-              <div class="file-info">
-                <div class="file-name">Final.pdf</div>
-                <div class="file-meta">Sent by You • Latest</div>
-              </div>
-              <div class="file-actions">
-                <span class="file-date">12 September 2025, 02:15 PM</span>
-                <button class="ghost">Export</button>
+
+              <div class="category-card">
+                <div class="category-name">Final Deliverables</div>
+                <div class="category-placeholder">
+                  <p>✓</p>
+                  <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+                </div>
+                <p class="muted" style="font-size: 12px; margin-top: 12px; text-align: center;">... and 10 more</p>
               </div>
             </div>
           </div>
 
-          <h3 style="margin-top: 28px;">Preview</h3>
-          <div class="files-preview-grid">
-            <div class="preview-card">
-              <div class="preview-thumbnail">📄</div>
-              <p class="preview-name">Slides.pptx</p>
+          <!-- DRAFTS/SLIDES/REFERENCES VIEW -->
+          <div id="files-drafts-view">
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+                <button class="ghost">Sort By</button>
+                <button class="ghost">Date ▼</button>
+                <button class="ghost">Filter</button>
+                <button class="ghost">All Versions ▼</button>
+                <input type="text" placeholder="Search" class="files-search" style="margin-left: auto;" />
+              </div>
             </div>
-            <div class="preview-card">
-              <div class="preview-thumbnail">📄</div>
-              <p class="preview-name">Report.docx</p>
+
+            <div class="incoming-files-preview" style="margin-bottom: 32px;">
+              <div class="file-placeholder">📄</div>
+              <div class="file-placeholder">📄</div>
+              <div class="file-placeholder">📄</div>
+              <div class="file-placeholder">📄</div>
             </div>
-            <div class="preview-card">
-              <div class="preview-thumbnail">📊</div>
-              <p class="preview-name">Spreadsheet.xlsx</p>
+
+            <div class="files-list">
+              <div class="file-row">
+                <div class="file-info">
+                  <div class="file-name">Slides_v1.pptx</div>
+                  <div class="file-meta">Version 1</div>
+                </div>
+                <div class="file-actions">
+                  <span class="file-date">10 September 2025, 11:30 PM</span>
+                  <button class="ghost">Move to...</button>
+                </div>
+              </div>
+
+              <div class="file-row">
+                <div class="file-info">
+                  <div class="file-name">Slides_v2.pptx</div>
+                  <div class="file-meta">Version 2</div>
+                </div>
+                <div class="file-actions">
+                  <span class="file-date">11 September 2025, 12:30 PM</span>
+                  <button class="ghost">Move to...</button>
+                </div>
+              </div>
+
+              <div class="file-row">
+                <div class="file-info">
+                  <div class="file-name">Slides_v3.pptx</div>
+                  <div class="file-meta">Version 3</div>
+                </div>
+                <div class="file-actions">
+                  <span class="file-date">11 September 2025, 01:30 PM</span>
+                  <button class="ghost">Move to...</button>
+                </div>
+              </div>
             </div>
-            <div class="preview-card">
-              <div class="preview-thumbnail">📋</div>
-              <p class="preview-name">Final.pdf</p>
+          </div>
+
+          <!-- FINAL DELIVERABLES/EXPORT VIEW -->
+          <div id="files-export-view" style="display: none;">
+            <div class="files-toolbar">
+              <div class="files-toolbar-actions">
+                <button class="primary" onclick="toggleAllCheckboxes()">Export Selected</button>
+                <button class="secondary">Export All</button>
+                <input type="text" placeholder="Search files..." class="files-search" />
+              </div>
+            </div>
+
+            <div class="files-list">
+              <div class="file-row">
+                <div class="file-checkbox-wrapper">
+                  <input type="checkbox" class="file-checkbox" />
+                </div>
+                <div class="file-info">
+                  <div class="file-name">Slides.pptx</div>
+                  <div class="file-meta">Sent by You • Latest</div>
+                </div>
+                <div class="file-actions">
+                  <span class="file-date">10 September 2025, 11:30 PM</span>
+                  <button class="ghost">Export</button>
+                </div>
+              </div>
+
+              <div class="file-row">
+                <div class="file-checkbox-wrapper">
+                  <input type="checkbox" class="file-checkbox" />
+                </div>
+                <div class="file-info">
+                  <div class="file-name">Report.docx</div>
+                  <div class="file-meta">Sent by Charlotte • Latest</div>
+                </div>
+                <div class="file-actions">
+                  <span class="file-date">11 September 2025, 12:30 PM</span>
+                  <button class="ghost">Export</button>
+                </div>
+              </div>
+
+              <div class="file-row">
+                <div class="file-checkbox-wrapper">
+                  <input type="checkbox" class="file-checkbox" />
+                </div>
+                <div class="file-info">
+                  <div class="file-name">Spreadsheet.xlsx</div>
+                  <div class="file-meta">Sent by Coco • Latest</div>
+                </div>
+                <div class="file-actions">
+                  <span class="file-date">11 September 2025, 01:30 PM</span>
+                  <button class="ghost">Export</button>
+                </div>
+              </div>
+
+              <div class="file-row">
+                <div class="file-checkbox-wrapper">
+                  <input type="checkbox" class="file-checkbox" />
+                </div>
+                <div class="file-info">
+                  <div class="file-name">Final.pdf</div>
+                  <div class="file-meta">Sent by You • Latest</div>
+                </div>
+                <div class="file-actions">
+                  <span class="file-date">12 September 2025, 02:15 PM</span>
+                  <button class="ghost">Export</button>
+                </div>
+              </div>
+            </div>
+
+            <h3 style="margin-top: 28px;">Preview</h3>
+            <div class="files-preview-grid">
+              <div class="preview-card">
+                <div class="preview-thumbnail">📄</div>
+                <p class="preview-name">Slides.pptx</p>
+              </div>
+              <div class="preview-card">
+                <div class="preview-thumbnail">📄</div>
+                <p class="preview-name">Report.docx</p>
+              </div>
+              <div class="preview-card">
+                <div class="preview-thumbnail">📊</div>
+                <p class="preview-name">Spreadsheet.xlsx</p>
+              </div>
+              <div class="preview-card">
+                <div class="preview-thumbnail">📋</div>
+                <p class="preview-name">Final.pdf</p>
+              </div>
             </div>
           </div>
         </section>
