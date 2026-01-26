@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatCat · Hi-Fi Wireframe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="login-logo">🐱</div>
+        <div>
+          <p class="brand__name" style="margin: 0;">ChatCat</p>
+          <p class="brand__meta" style="margin: 0;">Whatsapp classifier</p>
+        </div>
+      </div>
+      <p class="muted" style="margin: 4px 0 16px;">Choose how you want to use the app.</p>
+      <div class="login-fields">
+        <input type="email" id="loginEmail" placeholder="Email (optional)" />
+        <label class="toggle" style="margin: 8px 0 4px;">
+          <input type="checkbox" id="loginSeniorChoice" />
+          <span>Use senior-friendly UI</span>
+        </label>
+      </div>
+      <button class="primary block" id="loginSubmitBtn">Log in</button>
+      <button class="ghost block" id="loginDismissBtn">Browse without logging in</button>
+    </div>
+  </div>
+
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="logo">🐱</div>
+        <div>
+          <p class="brand__name">ChatCat</p>
+          <p class="brand__meta">Whatsapp classifier</p>
+        </div>
+        <button class="sidebar__toggle" id="sidebarToggle" aria-label="Collapse sidebar">◀</button>
+      </div>
+      <nav class="nav">
+        <button class="nav__item active" data-page="dashboard">Dashboard</button>
+        <button class="nav__item" data-page="workspaces">Workspaces</button>
+        <button class="nav__item" data-page="search">Contextual Search</button>
+        <button class="nav__item" data-page="emotion">Emotion Scan</button>
+      </nav>
+      <div class="sidebar__footer">
+        <label class="toggle">
+          <input type="checkbox" id="seniorToggle" />
+          <span>Senior-friendly UI</span>
+        </label>
+        <div class="user">
+          <div class="avatar">CC</div>
+          <div>
+            <p class="user__name">Demo User</p>
+            <p class="user__meta">demo@chatcat.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- SENIOR MODE: 3 Feature Icons -->
+      <div class="senior-view" id="seniorView">
+        <button class="senior-exit" id="seniorExitBtn">← Exit Senior Mode</button>
+        <div class="senior-grid">
+          <button class="senior-feature" data-page="workspaces">
+            <div class="senior-icon">📁</div>
+            <p>Workspaces</p>
+          </button>
+          <button class="senior-feature" data-page="search">
+            <div class="senior-icon">🔍</div>
+            <p>Search</p>
+          </button>
+          <button class="senior-feature" data-page="emotion">
+            <div class="senior-icon">❤️</div>
+            <p>Emotions</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- DASHBOARD PAGE -->
+      <div class="page" id="page-dashboard" data-page="dashboard">
+        <header class="topbar">
+          <h2>Welcome back, Demo User</h2>
+          <button class="ghost" id="loginBtn">Login</button>
+        </header>
+        <section class="hero">
+          <div>
+            <h1>Organize your WhatsApp conversations</h1>
+            <p class="muted">ChatCat helps you tag, search, and understand your chats with AI-powered features.</p>
+          </div>
+        </section>
+        <section class="panel">
+          <h3>Quick access</h3>
+          <div class="dashboard-grid">
+            <button class="dashboard-card" data-page="workspaces">
+              <div class="dashboard-icon">📁</div>
+              <h4>Workspaces</h4>
+              <p>Create and manage workspaces. Import WhatsApp zips.</p>
+            </button>
+            <button class="dashboard-card" data-page="search">
+              <div class="dashboard-icon">🔍</div>
+              <h4>Contextual Search</h4>
+              <p>Search by meaning, tone, or attachment types.</p>
+            </button>
+            <button class="dashboard-card" data-page="emotion">
+              <div class="dashboard-icon">❤️</div>
+              <h4>Emotion Scan</h4>
+              <p>Detect emotions in messages you paste.</p>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- WORKSPACES PAGE -->
+      <div class="page" id="page-workspaces" data-page="workspaces">
+        <header class="topbar">
+          <h2>Workspaces</h2>
+          <div class="topbar__actions">
+            <button class="ghost">+ New workspace</button>
+          </div>
+        </header>
+        <section class="panel">
+          <div class="panel__header">
+            <h3>Your workspaces</h3>
+          </div>
+          <div class="workspace-form">
+            <input type="text" id="workspaceNameInput" placeholder="New workspace name" />
+            <button class="primary" id="createWorkspaceBtn">Create</button>
+          </div>
+          <div class="workspaces-list" id="workspacesList"></div>
+        </section>
+
+        <section class="panel" id="workspaceDetailPanel" style="display: none;">
+          <div class="panel__header">
+            <button class="ghost" id="backToWorkspacesBtn">Back to workspaces</button>
+            <h3 id="workspaceDetailTitle">Workspace details</h3>
+          </div>
+          <div id="workspaceDetailContent"></div>
+        </section>
+        <section class="panel">
+          <div class="panel__header">
+            <h3>Import WhatsApp zip</h3>
+          </div>
+          <div class="dropzone">Drop WhatsApp zip files here or browse</div>
+          <button class="primary" id="importBtn" style="margin-top: 12px;">Select zip file</button>
+          <ul class="list" id="queueList"></ul>
+        </section>
+      </div>
+
+      <!-- CONTEXTUAL SEARCH PAGE -->
+      <div class="page" id="page-search" data-page="search">
+        <header class="topbar">
+          <h2>Contextual Search</h2>
+          <button class="ghost" id="advancedFiltersBtn">Advanced filters</button>
+        </header>
+        <section class="panel">
+          <div class="search-panel">
+            <input type="text" placeholder="Search by meaning: 'math assignment photos' or 'deadline mentions'" id="contextualInput" />
+            <button class="primary" id="contextualSearchBtn">Search</button>
+          </div>
+        </section>
+        <section class="panel" id="searchResultsPanel">
+          <div class="panel__header">
+            <h3>Results</h3>
+          </div>
+          <div class="contextual" id="searchResults"></div>
+        </section>
+
+        <section class="panel" id="searchDetailPanel" style="display: none;">
+          <div class="panel__header">
+            <button class="ghost" id="backToResultsBtn">Back to results</button>
+            <h3 id="detailTitle">Result details</h3>
+          </div>
+          <div id="detailContent"></div>
+        </section>
+      </div>
+
+      <!-- EMOTION SCAN PAGE -->
+      <div class="page" id="page-emotion" data-page="emotion">
+        <header class="topbar">
+          <h2>Emotion Scan</h2>
+        </header>
+        <section class="panel">
+          <div class="panel__header">
+            <h3>Scan emotional tone</h3>
+            <p class="muted" style="margin: 8px 0 0; font-size: 14px;">Paste or type messages to detect emotions</p>
+          </div>
+          <textarea class="prompt" id="emotionInput" rows="6" placeholder="Paste messages here to scan their emotional tone. Example: 'I'm so frustrated with this deadline, I don't think I can make it.'"></textarea>
+          <button class="primary block" id="scanEmotionBtn">Scan emotions</button>
+        </section>
+        <section class="panel">
+          <div class="panel__header">
+            <h3>Detected emotions</h3>
+          </div>
+          <div class="emotion" id="emotionList"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="script.js"></script>
+</body>
+</html>
