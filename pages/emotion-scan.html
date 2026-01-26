@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatCat · Emotion Scan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="logo">🐱</div>
+        <div>
+          <p class="brand__name">ChatCat</p>
+          <p class="brand__meta">Whatsapp classifier</p>
+        </div>
+        <button class="sidebar__toggle" id="sidebarToggle" aria-label="Collapse sidebar">◀</button>
+      </div>
+      <nav class="nav">
+        <button class="nav__item" onclick="location.href='../index.html'">Dashboard</button>
+        <button class="nav__item" onclick="location.href='workspaces.html'">Workspaces</button>
+        <button class="nav__item" onclick="location.href='contextual-search.html'">Contextual Search</button>
+        <button class="nav__item" onclick="location.href='upload.html'">Upload</button>
+        <button class="nav__item active" onclick="location.href='emotion-scan.html'">Emotion Scan</button>
+      </nav>
+      <div class="sidebar__footer">
+        <label class="toggle">
+          <input type="checkbox" id="seniorToggle" />
+          <span>Senior-friendly UI</span>
+        </label>
+        <div class="user">
+          <div class="avatar">CC</div>
+          <div>
+            <p class="user__name">Demo User</p>
+            <p class="user__meta">demo@chatcat.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- EMOTION SCAN MULTI-PAGE -->
+      <div class="page active" id="emotion-main" data-page="emotion-main">
+        <header class="topbar">
+          <h2>Emotion Scan</h2>
+        </header>
+        <section class="panel" style="max-width: 700px; margin: 0 auto;">
+          <!-- Info banner -->
+          <div style="background: rgba(106, 228, 184, 0.1); border: 1px solid rgba(106, 228, 184, 0.3); border-radius: 12px; padding: 12px 14px; margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-start;">
+            <span style="font-size: 18px; flex-shrink: 0;">📊</span>
+            <div>
+              <p style="margin: 0 0 4px; font-weight: 600; color: var(--text); font-size: 14px;">Tone Classification</p>
+              <p style="margin: 0; font-size: 13px; color: var(--muted);">Select a chat below to analyze its emotional tone and get composition suggestions</p>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 18px;">
+            <!-- Main gauge -->
+            <div style="width: 220px; height: 220px; position: relative;">
+              <!-- SVG Circular Gauge -->
+              <svg width="220" height="220" viewBox="0 0 220 220">
+                <circle cx="110" cy="110" r="95" stroke="#23272f" stroke-width="18" fill="none"/>
+                <circle cx="110" cy="110" r="95" stroke="#6ae4b8" stroke-width="18" fill="none" stroke-dasharray="597" stroke-dashoffset="78" stroke-linecap="round"/>
+                <text x="110" y="110" text-anchor="middle" dominant-baseline="middle" font-size="38" font-weight="700" fill="#f4f4f6">87%</text>
+                <text x="110" y="140" text-anchor="middle" font-size="18" fill="#8d92a3">Neutral</text>
+              </svg>
+              <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
+            </div>
+
+            <!-- Status badges -->
+            <div style="display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; justify-content: center;">
+              <span class="pill pill--success" title="No risky or hostile words detected in this chat">😊 No risky words</span>
+              <span class="pill pill--warning" title="High time-sensitive messages detected">⏱️ High time pressure</span>
+            </div>
+
+            <!-- Selection section -->
+            <div style="display: flex; align-items: flex-start; gap: 24px; width: 100%; margin-top: 18px;">
+              <div style="flex: 1;">
+                <label for="chatSelect" class="muted" style="font-size: 15px; display: flex; align-items: center; gap: 6px;">
+                  <span style="font-weight: 600; color: var(--text);">Select chat to analyze</span>
+                  <span style="font-weight: 400; font-size: 12px;">(required)</span>
+                </label>
+                <select id="chatSelect" style="width: 100%; margin-top: 8px; padding: 12px 14px; border-radius: 12px; background: var(--panel-strong); color: var(--text); border: 2px solid var(--border); transition: all 0.2s; cursor: pointer;" title="Choose which WhatsApp export to analyze" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                  <option value="">-- Choose uploaded chat --</option>
+                  <option value="Sim Family GC">Sim Family GC (5 MB)</option>
+                  <option value="Church Group">Church Group (15 MB)</option>
+                  <option value="Neighbourhood Watch">Neighbourhood Watch (4 MB)</option>
+                  <option value="Old Friends Reunion">Old Friends Reunion (5 MB)</option>
+                  <option value="Mahjong Nights">Mahjong Nights (4 MB)</option>
+                </select>
+                <p class="muted" style="font-size: 12px; margin: 6px 0 0; text-align: left;">Don't see your chat? <button class="ghost" style="font-size: 12px; padding: 0; text-decoration: underline;" title="Upload more chats">Upload here</button></p>
+              </div>
+              <div style="flex: 1;">
+                <div class="card" style="min-height: 100px; display: flex; flex-direction: column;">
+                  <h4 style="margin: 0 0 8px; font-size: 14px; font-weight: 600;">🎯 What This Means</h4>
+                  <ul style="margin: 0; padding-left: 16px; color: var(--muted); font-size: 12px; line-height: 1.6; flex: 1;">
+                    <li><span style="color: #6ae4b8; font-weight: 600;">Green (87%)</span>: Mostly neutral/positive tone</li>
+                    <li><span style="color: #ffb85c; font-weight: 600;">Orange</span>: Time-sensitive messages</li>
+                    <li><span style="color: #ff6f61; font-weight: 600;">Red</span>: Hostile or negative tone</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Trend section -->
+            <div style="width: 100%; margin-top: 24px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <span style="font-weight: 600; color: var(--text); font-size: 15px;">📈 Tone History - Last 30 days</span>
+                <span class="pill pill--ghost" style="font-size: 11px;">+2 positive trend</span>
+              </div>
+              <!-- Sparkline -->
+              <svg width="100%" height="56" viewBox="0 0 320 56" style="background: none; margin-bottom: 8px;">
+                <defs>
+                  <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#58c6ff;stop-opacity:0.3" />
+                    <stop offset="100%" style="stop-color:#58c6ff;stop-opacity:0" />
+                  </linearGradient>
+                </defs>
+                <polyline points="0,40 20,38 40,32 60,28 80,30 100,18 120,22 140,16 160,20 180,28 200,24 220,32 240,26 260,34 280,22 300,28 320,18" fill="none" stroke="#58c6ff" stroke-width="3" stroke-linecap="round"/>
+                <polygon points="0,40 20,38 40,32 60,28 80,30 100,18 120,22 140,16 160,20 180,28 200,24 220,32 240,26 260,34 280,22 300,28 320,18 320,56 0,56" fill="url(#sparklineGradient)"/>
+                <circle cx="300" cy="28" r="5" fill="#6ae4b8" opacity="0.8"/>
+              </svg>
+              <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border);">
+                <span class="muted" style="font-size: 12px;">30 days ago</span>
+                <span class="muted" style="font-size: 12px; font-weight: 600; color: var(--text);">Today (87%)</span>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display: flex; gap: 12px; width: 100%; margin-top: 24px;">
+              <button class="ghost" id="toFactsFeelingsBtn" style="flex: 1; padding: 12px 16px;" title="See facts, feelings, and action items from this chat">📊 Facts & Feelings</button>
+              <button class="primary" id="toDraftComposerBtn" style="flex: 1; padding: 12px 16px;" title="Start composing a message with tone guidance">✏️ Draft Composer</button>
+            </div>
+
+            <!-- Help text -->
+            <p class="muted" style="font-size: 12px; text-align: center; margin: 12px 0 0;">💡 Select a chat to get started. You can analyze multiple chats and compare their tone patterns.</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- SCREEN 2: FACTS/FEELINGS/REQUESTS -->
+      <div class="page" id="emotion-facts-feelings" data-page="emotion-facts-feelings">
+        <header class="topbar">
+          <button class="ghost" id="backToMainBtn" style="margin-right: 12px;" title="Return to tone analysis">← Back</button>
+          <h2 id="s2ChatTitle">Chat Analysis</h2>
+          <span class="pill pill--ghost" style="margin-left: auto;">⏱️ Last 24 hours</span>
+        </header>
+
+        <!-- Overview metrics -->
+        <section class="panel">
+          <div class="workspace-stat" style="margin-top: 0;">
+            <div class="stat-box">
+              <div class="stat-label">Events Detected</div>
+              <p class="stat-value">24</p>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Tone Distribution</div>
+              <p class="stat-value" style="font-size: 16px;">Mostly positive</p>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Action Items</div>
+              <p class="stat-value">7</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Main content grid -->
+        <section class="panel">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+            
+            <!-- FACTS Column -->
+            <div style="display: flex; flex-direction: column;">
+              <h3 style="margin: 0 0 14px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 22px;">📅</span>
+                <span>Facts</span>
+                <span class="pill" style="margin-left: auto; font-size: 11px; padding: 4px 8px;">12</span>
+              </h3>
+              <div class="message-list" id="factsList" style="flex: 1; gap: 8px;">
+                <div class="message-item" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div style="flex: 1;">
+                    <div class="message-sender" style="margin-bottom: 4px;">6:30 PM</div>
+                    <p style="margin: 0; font-size: 14px;">Team meeting scheduled</p>
+                  </div>
+                </div>
+                <div class="message-item" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div style="flex: 1;">
+                    <div class="message-sender" style="margin-bottom: 4px;">Dec 10</div>
+                    <p style="margin: 0; font-size: 14px;">Project deadline moved</p>
+                  </div>
+                </div>
+                <div class="message-item" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div style="flex: 1;">
+                    <div class="message-sender" style="margin-bottom: 4px;">Dec 8</div>
+                    <p style="margin: 0; font-size: 14px;">Budget approval received</p>
+                  </div>
+                </div>
+              </div>
+              <p class="muted" style="font-size: 12px; margin-top: 10px; text-align: center;">← Scroll for more</p>
+            </div>
+
+            <!-- FEELINGS Column -->
+            <div style="display: flex; flex-direction: column;">
+              <h3 style="margin: 0 0 14px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 22px;">❤️</span>
+                <span>Feelings</span>
+              </h3>
+              <div id="feelingsList" style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                <div class="emotion__item" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                  <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 20px;">😊</span>
+                    <span style="font-size: 20px;">😌</span>
+                  </div>
+                  <p style="margin: 0; font-weight: 600; color: var(--text); font-size: 14px;">Optimistic & Relief</p>
+                  <p style="margin: 4px 0 0; font-size: 12px; color: var(--muted);">8 messages</p>
+                </div>
+                <div class="emotion__item" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                  <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 20px;">😰</span>
+                  </div>
+                  <p style="margin: 0; font-weight: 600; color: var(--text); font-size: 14px;">Worried</p>
+                  <p style="margin: 4px 0 0; font-size: 12px; color: var(--muted);">2 messages</p>
+                </div>
+                <div class="emotion__item" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                  <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 20px;">😐</span>
+                  </div>
+                  <p style="margin: 0; font-weight: 600; color: var(--text); font-size: 14px;">Neutral</p>
+                  <p style="margin: 4px 0 0; font-size: 12px; color: var(--muted);">12 messages</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- REQUESTS Column -->
+            <div style="display: flex; flex-direction: column;">
+              <h3 style="margin: 0 0 14px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 22px;">📝</span>
+                <span>Requests</span>
+                <span class="pill pill--warning" style="margin-left: auto; font-size: 11px; padding: 4px 8px;">3 Open</span>
+              </h3>
+              <div class="message-list" id="requestsList" style="flex: 1; gap: 8px;">
+                <div class="message-item" style="display: flex; flex-direction: column; gap: 8px;">
+                  <p style="margin: 0; font-size: 14px; font-weight: 500;">Contact Jeff about budget</p>
+                  <button class="primary" style="font-size: 11px; padding: 8px 12px; width: 100%;" title="Set a reminder for this action">🔔 Set Reminder</button>
+                </div>
+                <div class="message-item" style="display: flex; flex-direction: column; gap: 8px;">
+                  <p style="margin: 0; font-size: 14px; font-weight: 500;">Follow up on client feedback</p>
+                  <button class="primary" style="font-size: 11px; padding: 8px 12px; width: 100%;" title="Set a reminder for this action">🔔 Set Reminder</button>
+                </div>
+                <div class="message-item" style="display: flex; flex-direction: column; gap: 8px;">
+                  <p style="margin: 0; font-size: 14px; font-weight: 500;">Review final designs</p>
+                  <button class="primary" style="font-size: 11px; padding: 8px 12px; width: 100%;" title="Set a reminder for this action">🔔 Set Reminder</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline visualization -->
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
+            <h4 style="margin: 0 0 12px; display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 16px;">⏰</span>
+              Conversation Timeline
+            </h4>
+            <svg width="100%" height="60" viewBox="0 0 600 60" style="background: none; overflow: visible;">
+              <!-- Background timeline -->
+              <line x1="10" y1="30" x2="590" y2="30" stroke="var(--border)" stroke-width="2"/>
+              
+              <!-- Events on timeline -->
+              <circle cx="50" cy="30" r="6" fill="#58c6ff" style="cursor: pointer;" title="Team meeting"/>
+              <text x="50" y="48" text-anchor="middle" font-size="11" fill="var(--muted)">6:30 AM</text>
+              
+              <circle cx="150" cy="30" r="6" fill="#6ae4b8" style="cursor: pointer;" title="Positive feedback"/>
+              <text x="150" y="48" text-anchor="middle" font-size="11" fill="var(--muted)">10 AM</text>
+              
+              <circle cx="280" cy="30" r="6" fill="#ffb85c" style="cursor: pointer;" title="Request for budget review"/>
+              <text x="280" y="48" text-anchor="middle" font-size="11" fill="var(--muted)">2 PM</text>
+              
+              <circle cx="420" cy="30" r="6" fill="#6ae4b8" style="cursor: pointer;" title="Deadline extended"/>
+              <text x="420" y="48" text-anchor="middle" font-size="11" fill="var(--muted)">6 PM</text>
+              
+              <circle cx="550" cy="30" r="6" fill="#58c6ff" style="cursor: pointer;" title="Final confirmation"/>
+              <text x="550" y="48" text-anchor="middle" font-size="11" fill="var(--muted)">10 PM</text>
+            </svg>
+            <div style="display: flex; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #58c6ff;"></span>
+                <span class="muted">Neutral</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #6ae4b8;"></span>
+                <span class="muted">Positive</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ffb85c;"></span>
+                <span class="muted">Action Needed</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- SCREEN 3: DRAFT COMPOSER -->
+      <div class="page" id="emotion-draft-composer" data-page="emotion-draft-composer">
+        <header class="topbar">
+          <button class="ghost" id="backToMainBtn2" style="margin-right: 12px;" title="Return to tone analysis">← Back</button>
+          <h2>Draft Composer</h2>
+          <span class="pill pill--ghost" style="margin-left: auto;" title="Compose and refine your message">📝 Step 2 of 4</span>
+        </header>
+        <section class="panel" style="max-width: 900px; margin: 0 auto;">
+          <!-- Information banner -->
+          <div style="background: rgba(106, 228, 184, 0.1); border: 1px solid rgba(106, 228, 184, 0.3); border-radius: 12px; padding: 12px 14px; margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-start;">
+            <span style="font-size: 18px; flex-shrink: 0;">💡</span>
+            <div>
+              <p style="margin: 0 0 4px; font-weight: 600; color: var(--text); font-size: 14px;">Tip: Choose a tone that matches your recipient</p>
+              <p style="margin: 0; font-size: 13px; color: var(--muted);">The AI will help you refine your message in the next step</p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+            <!-- LEFT: Rich text editor -->
+            <div>
+              <label style="font-weight: 600; color: var(--text); font-size: 15px; display: block; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <span>Compose your message</span>
+                <span class="muted" style="font-weight: 400; font-size: 12px;">(approx. 80 chars)</span>
+              </label>
+              <div style="background: var(--panel-strong); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                <div style="display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid var(--border); background: var(--panel); flex-wrap: wrap;">
+                  <button class="ghost" style="font-size: 12px; padding: 6px 8px; border-radius: 8px;" title="Bold text"><strong>B</strong></button>
+                  <button class="ghost" style="font-size: 12px; padding: 6px 8px; border-radius: 8px;" title="Italic text"><em>I</em></button>
+                  <button class="ghost" style="font-size: 12px; padding: 6px 8px; border-radius: 8px;" title="Underline text"><u>U</u></button>
+                  <div style="width: 1px; background: var(--border);"></div>
+                  <button class="ghost" style="font-size: 12px; padding: 6px 8px; border-radius: 8px;" title="Bullet list">∘ List</button>
+                  <button class="ghost" style="font-size: 12px; padding: 6px 8px; border-radius: 8px;" title="Numbered list">1. List</button>
+                </div>
+                <textarea id="draftText" style="width: 100%; min-height: 180px; padding: 12px; border: none; background: var(--panel-strong); color: var(--text); resize: vertical; font-family: inherit; font-size: 14px; line-height: 1.6;" placeholder="Type your message here...&#10;Example: 'Can we discuss the budget proposal before Friday?'">I wanted to reach out and see if we could discuss the budget proposal. I think we should review it together before the deadline.</textarea>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                <span class="muted" style="font-size: 12px;">Character count: <span id="charCount">147</span>/500</span>
+                <button class="ghost" style="font-size: 12px;" title="Clear message">Clear</button>
+              </div>
+            </div>
+
+            <!-- RIGHT: Tone presets & settings -->
+            <div style="display: flex; flex-direction: column;">
+              <label style="font-weight: 600; color: var(--text); font-size: 15px; display: block; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                <span>Tone</span>
+                <span class="muted" style="font-weight: 400; font-size: 12px;">(required)</span>
+              </label>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+                <button class="pill" style="justify-content: flex-start; padding: 12px 14px; border-radius: 12px; background: transparent; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer;" title="Charming, warm tone" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">💋 Flirty</button>
+                <button class="pill" style="justify-content: flex-start; padding: 12px 14px; border-radius: 12px; background: var(--panel-strong); border: 2px solid var(--accent);" title="Selected tone">😊 Friendly</button>
+                <button class="pill" style="justify-content: flex-start; padding: 12px 14px; border-radius: 12px; background: transparent; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer;" title="Professional, formal tone" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">💼 Work</button>
+                <button class="pill" style="justify-content: flex-start; padding: 12px 14px; border-radius: 12px; background: transparent; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer;" title="Casual, warm tone" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">👨‍👩‍👧 Family</button>
+              </div>
+
+              <label style="font-weight: 600; color: var(--text); font-size: 15px; display: block; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                <span>Recipient</span>
+                <span class="muted" style="font-weight: 400; font-size: 12px;">(optional)</span>
+              </label>
+              <select style="width: 100%; padding: 10px 12px; border-radius: 10px; background: var(--panel-strong); color: var(--text); border: 2px solid var(--border); margin-bottom: 20px; cursor: pointer; transition: all 0.2s;" title="Select who will receive this message">
+                <option>-- Select recipient --</option>
+                <option>Jeff (Manager)</option>
+                <option>Team (5 people)</option>
+                <option>Client</option>
+              </select>
+              <button class="primary block" id="toRewriteSuggestionsBtn" style="margin-top: auto;" title="Get AI suggestions for your message">→ View Suggestions</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- SCREEN 4: REWRITE SUGGESTIONS -->
+      <div class="page" id="emotion-rewrite" data-page="emotion-rewrite">
+        <header class="topbar">
+          <button class="ghost" id="backToComposerBtn" style="margin-right: 12px;" title="Edit your message">← Back</button>
+          <h2>Rewrite Suggestions</h2>
+          <span class="pill pill--ghost" style="margin-left: auto;" title="AI-powered refinements">🤖 Step 3 of 4</span>
+        </header>
+        <section class="panel" style="max-width: 1000px; margin: 0 auto;">
+          <!-- Comparison info -->
+          <div style="background: rgba(88, 198, 255, 0.1); border: 1px solid rgba(88, 198, 255, 0.3); border-radius: 12px; padding: 12px 14px; margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-start;">
+            <span style="font-size: 18px; flex-shrink: 0;">✨</span>
+            <div>
+              <p style="margin: 0 0 4px; font-weight: 600; color: var(--text); font-size: 14px;">AI-refined version</p>
+              <p style="margin: 0; font-size: 13px; color: var(--muted);">Compare your original with the suggested rewrite. Edit to fit your style.</p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.2fr 1.2fr 0.8fr; gap: 20px;">
+            <!-- LEFT: Original -->
+            <div>
+              <h4 style="margin: 0 0 12px; display: flex; align-items: center; gap: 6px;">
+                <span>Your Original</span>
+                <span class="muted" style="font-size: 12px; font-weight: 400;">(147 chars)</span>
+              </h4>
+              <div style="padding: 14px; border-radius: 12px; background: var(--panel-strong); border: 1px solid var(--border); min-height: 180px; color: var(--muted); font-size: 14px; line-height: 1.6;">
+                <p style="margin: 0;">I wanted to reach out and see if we could discuss the budget proposal. I think we should review it together before the deadline.</p>
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <span class="pill pill--ghost" style="font-size: 11px;">More verbose</span>
+                <span class="pill pill--ghost" style="font-size: 11px;">Cautious tone</span>
+              </div>
+            </div>
+
+            <!-- CENTER: Suggested -->
+            <div>
+              <h4 style="margin: 0 0 12px; display: flex; align-items: center; gap: 6px;">
+                <span>✨ Suggested</span>
+                <span class="muted" style="font-size: 12px; font-weight: 400;">(84 chars)</span>
+              </h4>
+              <textarea style="width: 100%; min-height: 180px; padding: 14px; border-radius: 12px; background: var(--panel-strong); border: 2px solid var(--accent); color: var(--text); resize: none; font-size: 14px; line-height: 1.6; font-family: inherit;" title="Edit this suggestion to your liking">Let's discuss the budget proposal. I'd like to review it with you before the deadline.</textarea>
+              <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <span class="pill pill--success" style="font-size: 11px;">37% shorter</span>
+                <span class="pill pill--success" style="font-size: 11px;">Clear & direct</span>
+              </div>
+            </div>
+
+            <!-- RIGHT: Tone options -->
+            <div style="display: flex; flex-direction: column;">
+              <h4 style="margin: 0 0 12px; display: flex; align-items: center; gap: 6px;">
+                <span>Tone</span>
+              </h4>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+                <button class="pill" style="justify-content: center; padding: 10px 12px; border-radius: 10px; background: linear-gradient(135deg, rgba(88, 198, 255, 0.15), rgba(106, 228, 184, 0.15)); border: 2px solid var(--accent); cursor: pointer; transition: all 0.2s;" title="Selected: Direct and to the point">Direct</button>
+                <button class="pill" style="justify-content: center; padding: 10px 12px; border-radius: 10px; background: transparent; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;" title="Polite and courteous">Polite</button>
+                <button class="pill" style="justify-content: center; padding: 10px 12px; border-radius: 10px; background: transparent; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;" title="Relaxed and friendly">Casual</button>
+              </div>
+              <button class="primary block" id="toPreviewBtn" style="margin-top: auto;" title="Accept this version and proceed">→ Use This Version</button>
+              <button class="ghost block" style="margin-top: 8px;" title="Edit message again">← Edit Draft</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- SCREEN 5: PRE-SEND PREVIEW -->
+      <div class="page" id="emotion-preview" data-page="emotion-preview">
+        <header class="topbar">
+          <button class="ghost" id="backToRewriteBtn" style="margin-right: 12px;" title="Adjust refinements">← Back</button>
+          <h2>Ready to Send</h2>
+          <span class="pill pill--success" style="margin-left: auto;" title="Final step">✓ Step 4 of 4</span>
+        </header>
+        <section class="panel" style="max-width: 650px; margin: 0 auto;">
+          <!-- Success banner -->
+          <div style="background: rgba(106, 228, 184, 0.1); border: 1px solid rgba(106, 228, 184, 0.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-start;">
+            <span style="font-size: 20px; flex-shrink: 0;">✓</span>
+            <div>
+              <p style="margin: 0 0 4px; font-weight: 600; color: var(--text); font-size: 14px;">Message ready to send</p>
+              <p style="margin: 0; font-size: 13px; color: var(--muted);">Your message is clear and well-toned. You can send it now or make final adjustments.</p>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 18px;">
+            <!-- Message preview in chat bubble -->
+            <div style="width: 100%; max-width: 480px;">
+              <p class="muted" style="font-size: 12px; margin: 0 0 8px; text-align: center;">Message preview</p>
+              <div style="background: linear-gradient(135deg, rgba(88, 198, 255, 0.12), rgba(106, 228, 184, 0.08)); border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px; width: 100%;">
+                <p style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--text); font-weight: 500;">Let's discuss the budget proposal. I'd like to review it with you before the deadline.</p>
+              </div>
+            </div>
+
+            <!-- Tone & recipient info -->
+            <div style="display: flex; gap: 12px; width: 100%; justify-content: center;">
+              <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 20px; background: var(--panel-strong); border: 1px solid var(--border);">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #58c6ff;"></span>
+                <span style="font-weight: 600; font-size: 13px; color: var(--text);">Direct & Professional</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 20px; background: var(--panel-strong); border: 1px solid var(--border);">
+                <span style="font-size: 16px;">👤</span>
+                <span style="font-weight: 600; font-size: 13px; color: var(--text);">Jeff (Manager)</span>
+              </div>
+            </div>
+
+            <!-- Tone adjustments -->
+            <div style="width: 100%; background: var(--panel-strong); border: 1px solid var(--border); border-radius: 12px; padding: 14px;">
+              <p style="margin: 0 0 12px; font-weight: 600; color: var(--text); font-size: 13px;">Fine-tune tone (optional)</p>
+              <div style="display: flex; gap: 8px;">
+                <label class="toggle" style="margin: 0; flex: 1;" title="Make the message more friendly">
+                  <input type="radio" name="adjustment" />
+                  <span>Soften tone</span>
+                </label>
+                <label class="toggle" style="margin: 0; flex: 1;" title="Reduce word count">
+                  <input type="radio" name="adjustment" />
+                  <span>More concise</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div style="display: flex; gap: 12px; width: 100%;">
+              <button class="primary" style="flex: 1; padding: 12px 16px;" title="Copy message to clipboard">📋 Copy to Clipboard</button>
+              <button class="ghost" id="backToComposerFromPreviewBtn" style="flex: 1; padding: 12px 16px;" title="Go back and edit">✏️ Edit</button>
+            </div>
+
+            <!-- Info text -->
+            <p class="muted" style="font-size: 12px; text-align: center; margin: 0;">💡 Copy your message and send it through your messaging app</p>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="../script-shared.js"></script>
+  <script src="../pages-shared.js"></script>
+  <script src="emotion-scan-script.js"></script>
+</body>
+</html>
