@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatCat · Contextual Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="logo">🐱</div>
+        <div>
+          <p class="brand__name">ChatCat</p>
+          <p class="brand__meta">Whatsapp classifier</p>
+        </div>
+        <button class="sidebar__toggle" id="sidebarToggle" aria-label="Collapse sidebar">◀</button>
+      </div>
+      <nav class="nav">
+        <button class="nav__item" onclick="location.href='../index.html'">Dashboard</button>
+        <button class="nav__item" onclick="location.href='workspaces.html'">Workspaces</button>
+        <button class="nav__item active" onclick="location.href='contextual-search.html'">Contextual Search</button>
+        <button class="nav__item" onclick="location.href='upload.html'">Upload</button>
+        <button class="nav__item" onclick="location.href='emotion-scan.html'">Emotion Scan</button>
+      </nav>
+      <div class="sidebar__footer">
+        <label class="toggle">
+          <input type="checkbox" id="seniorToggle" />
+          <span>Senior-friendly UI</span>
+        </label>
+        <div class="user">
+          <div class="avatar">CC</div>
+          <div>
+            <p class="user__name">Demo User</p>
+            <p class="user__meta">demo@chatcat.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- CONTEXTUAL SEARCH PAGE -->
+      <div class="page active" id="page-search" data-page="search">
+        <header class="topbar">
+          <h2>Contextual Search</h2>
+          <button class="ghost" id="advancedFiltersBtn">Advanced filters</button>
+        </header>
+        <section class="panel">
+          <div class="search-panel">
+            <input type="text" placeholder="Search by meaning: 'math assignment photos' or 'deadline mentions'" id="contextualInput" />
+            <button class="primary" id="contextualSearchBtn">Search</button>
+          </div>
+        </section>
+        <section class="panel" id="searchResultsPanel">
+          <div class="panel__header">
+            <h3>Results</h3>
+          </div>
+          <div class="contextual" id="searchResults"></div>
+        </section>
+
+        <section class="panel" id="searchDetailPanel" style="display: none;">
+          <div class="panel__header">
+            <button class="ghost" id="backToResultsBtn">← Back to results</button>
+            <h3 id="detailTitle">Result details</h3>
+          </div>
+          <div id="detailContent"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="../script-shared.js"></script>
+  <script src="../pages-shared.js"></script>
+  <script>
+    // Contextual search specific functionality
+    const contextualInput = document.getElementById('contextualInput');
+    const contextualSearchBtn = document.getElementById('contextualSearchBtn');
+    const advancedFiltersBtn = document.getElementById('advancedFiltersBtn');
+    const searchResults = document.getElementById('searchResults');
+    const backToResultsBtn = document.getElementById('backToResultsBtn');
+
+    // Sample contextual search results
+    const contextual = [
+      { title: 'Find: soccer practice photos', meta: '8 attachments - 12 Jul 2025 - AI tags: sports, kids', type: 'attachments', items: [
+        { name: 'soccer-practice-01.jpg', size: '2.4 MB', date: '12 Jul 3:45 PM', sender: 'Kai' },
+        { name: 'soccer-practice-02.jpg', size: '3.1 MB', date: '12 Jul 3:46 PM', sender: 'Kai' },
+        { name: 'soccer-practice-03.jpg', size: '2.8 MB', date: '12 Jul 3:47 PM', sender: 'Kai' },
+        { name: 'soccer-goal-highlight.mp4', size: '8.5 MB', date: '12 Jul 4:00 PM', sender: 'Mom' },
+        { name: 'team-photo.jpg', size: '4.2 MB', date: '12 Jul 4:15 PM', sender: 'Coach' }
+      ]},
+      { title: 'Tone: frustrated message from Kai', meta: 'Detected tone: Frustrated - 1 message - 09 Jan 2026', type: 'messages', items: [
+        { sender: 'Kai', text: 'I cannot believe the project deadline moved again. This is the third time!', time: '09 Jan 2:15 PM', tone: 'Frustrated' },
+        { sender: 'Kai', text: 'How am I supposed to deliver quality work with these constant changes?', time: '09 Jan 2:16 PM', tone: 'Frustrated' }
+      ]},
+      { title: 'Ask: invoices sent last quarter', meta: '6 docs - 3 senders - Aug-Oct 2025', type: 'documents', items: [
+        { name: 'Q3-Invoice-2025.pdf', size: '1.2 MB', date: '30 Oct 9:00 AM', sender: 'Finance' },
+        { name: 'Invoice-Aug-2025.xlsx', size: '0.8 MB', date: '31 Aug 10:30 AM', sender: 'Accounting' },
+        { name: 'Invoice-Sep-2025.xlsx', size: '0.9 MB', date: '30 Sep 2:00 PM', sender: 'Accounting' },
+        { name: 'Invoice-Oct-2025.xlsx', size: '0.85 MB', date: '31 Oct 3:15 PM', sender: 'Accounting' }
+      ]},
+      { title: 'Search: mentions of assignment', meta: '24 hits - math, chem - Attachment count: 5', type: 'mixed', items: [
+        { type: 'message', sender: 'Jasmine', text: 'Math assignment due Friday', time: '15 Jan 1:20 PM' },
+        { type: 'message', sender: 'Kai', text: 'Can you review my chemistry assignment?', time: '15 Jan 3:45 PM' },
+        { type: 'attachment', name: 'math-assignment-draft.pdf', size: '0.5 MB', date: '15 Jan 4:05 PM' },
+        { type: 'message', sender: 'Jasmine', text: 'Sure, send it over', time: '15 Jan 4:00 PM' },
+        { type: 'attachment', name: 'chem-lab-report.docx', size: '1.1 MB', date: '15 Jan 5:20 PM' }
+      ]}
+    ];
+
+    function renderContextual() {
+      searchResults.innerHTML = '';
+      contextual.forEach(function(c, index) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.setAttribute('data-index', index);
+        card.innerHTML = '<p class="card__title">' + c.title + '</p><p class="card__meta">' + c.meta + '</p>';
+        card.addEventListener('click', function() {
+          showSearchDetail(index);
+        });
+        searchResults.appendChild(card);
+      });
+      if (contextual.length > 0) {
+        document.getElementById('searchResultsPanel').classList.add('active');
+      }
+    }
+
+    function showSearchDetail(index) {
+      const result = contextual[index];
+      if (!result) return;
+      
+      const detailPanel = document.getElementById('searchDetailPanel');
+      const detailTitle = document.getElementById('detailTitle');
+      const detailContent = document.getElementById('detailContent');
+      
+      detailTitle.textContent = result.title;
+      
+      let html = '';
+      
+      if (result.type === 'messages') {
+        html = '<div class="message-list">';
+        result.items.forEach(function(item) {
+          html += '<div class="message-item"><div class="message-sender">' + item.sender + '</div><p class="message-text">' + item.text + '</p><div class="message-time">' + item.time + '</div></div>';
+        });
+        html += '</div>';
+      } else if (result.type === 'attachments') {
+        html = '<div class="attachment-list">';
+        result.items.forEach(function(item) {
+          const ext = item.name.split('.').pop().toUpperCase();
+          html += '<div class="attachment-item"><div class="attachment-type-icon">' + ext + '</div><div class="attachment-info"><p class="attachment-title">' + item.name + '</p><div class="attachment-meta">' + item.sender + ' - ' + item.size + ' - ' + item.date + '</div></div></div>';
+        });
+        html += '</div>';
+      } else if (result.type === 'documents') {
+        html = '<div class="document-list">';
+        result.items.forEach(function(item) {
+          const ext = item.name.split('.').pop().toUpperCase();
+          html += '<div class="document-item"><div class="document-icon">' + ext + '</div><div class="document-info"><p class="document-name">' + item.name + '</p><div class="document-meta">' + item.sender + ' - ' + item.size + ' - ' + item.date + '</div></div></div>';
+        });
+        html += '</div>';
+      } else if (result.type === 'mixed') {
+        html = '<div class="mixed-list">';
+        result.items.forEach(function(item) {
+          if (item.type === 'message') {
+            html += '<div class="mixed-item item-message"><div class="message-sender">' + item.sender + '</div><p class="message-text">' + item.text + '</p><div class="message-time">' + item.time + '</div></div>';
+          } else if (item.type === 'attachment') {
+            const ext = item.name.split('.').pop().toUpperCase();
+            html += '<div class="mixed-item"><div class="item-attachment"><div class="item-attachment-icon">' + ext + '</div><div class="item-attachment-info"><p class="item-attachment-name">' + item.name + '</p><div class="item-attachment-meta">' + item.size + ' - ' + item.date + '</div></div></div></div>';
+          }
+        });
+        html += '</div>';
+      }
+      
+      detailContent.innerHTML = html;
+      detailPanel.style.display = 'block';
+      document.getElementById('searchResultsPanel').style.display = 'none';
+    }
+
+    function runContextSearch() {
+      const query = contextualInput.value.trim();
+      if (!query) {
+        toast('Type a search to see results.');
+        return;
+      }
+      contextual.unshift({ title: 'Search: ' + query, meta: 'Semantic match - attachments + messages', type: 'mixed', items: [
+        { type: 'message', sender: 'You', text: 'Searching for: ' + query, time: 'Just now' },
+        { type: 'attachment', name: query + '-results.pdf', size: '0.8 MB', date: 'Just now' }
+      ]});
+      renderContextual();
+      toast('Found results for "' + query + '"');
+    }
+
+    if (contextualSearchBtn) {
+      contextualSearchBtn.addEventListener('click', runContextSearch);
+    }
+
+    if (contextualInput) {
+      contextualInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') runContextSearch();
+      });
+    }
+
+    if (advancedFiltersBtn) {
+      advancedFiltersBtn.addEventListener('click', function() {
+        toast('Filters: tone + attachment type + date range');
+      });
+    }
+
+    if (backToResultsBtn) {
+      backToResultsBtn.addEventListener('click', function() {
+        document.getElementById('searchDetailPanel').style.display = 'none';
+        document.getElementById('searchResultsPanel').style.display = 'block';
+      });
+    }
+
+    // Initialize
+    renderContextual();
+  </script>
+</body>
+</html>

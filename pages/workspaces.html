@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatCat · Workspaces</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="logo">🐱</div>
+        <div>
+          <p class="brand__name">ChatCat</p>
+          <p class="brand__meta">Whatsapp classifier</p>
+        </div>
+        <button class="sidebar__toggle" id="sidebarToggle" aria-label="Collapse sidebar">◀</button>
+      </div>
+      <nav class="nav">
+        <button class="nav__item" onclick="location.href='../index.html'">Dashboard</button>
+        <button class="nav__item active" onclick="location.href='workspaces.html'">Workspaces</button>
+        <button class="nav__item" onclick="location.href='contextual-search.html'">Contextual Search</button>
+        <button class="nav__item" onclick="location.href='upload.html'">Upload</button>
+        <button class="nav__item" onclick="location.href='emotion-scan.html'">Emotion Scan</button>
+      </nav>
+      <div class="sidebar__footer">
+        <label class="toggle">
+          <input type="checkbox" id="seniorToggle" />
+          <span>Senior-friendly UI</span>
+        </label>
+        <div class="user">
+          <div class="avatar">CC</div>
+          <div>
+            <p class="user__name">Demo User</p>
+            <p class="user__meta">demo@chatcat.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- WORKSPACES PAGE -->
+      <div class="page active" id="page-workspaces" data-page="workspaces">
+        <header class="topbar">
+          <h2>Workspaces</h2>
+          <div class="topbar__actions">
+            <button class="ghost">+ New workspace</button>
+          </div>
+        </header>
+        <section class="panel">
+          <div class="panel__header">
+            <h3>Your workspaces</h3>
+          </div>
+          <div class="workspace-form">
+            <input type="text" id="workspaceNameInput" placeholder="New workspace name" />
+            <button class="primary" id="createWorkspaceBtn">Create</button>
+          </div>
+          <div class="workspaces-list" id="workspacesList"></div>
+        </section>
+
+        <section class="panel" id="workspaceDetailPanel" style="display: none;">
+          <div class="panel__header">
+            <button class="ghost" id="backToWorkspacesBtn">Back to workspaces</button>
+            <h3 id="workspaceDetailTitle">Workspace details</h3>
+          </div>
+          <div id="workspaceDetailContent"></div>
+        </section>
+        <section class="panel">
+          <div class="panel__header">
+            <h3>Import WhatsApp zip</h3>
+          </div>
+          <div class="dropzone">Drop WhatsApp zip files here or browse</div>
+          <button class="primary" id="importBtn" style="margin-top: 12px;">Select zip file</button>
+          <ul class="list" id="queueList"></ul>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="../script-shared.js"></script>
+  <script src="../pages-shared.js"></script>
+</body>
+</html>

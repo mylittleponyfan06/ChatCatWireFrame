@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatCat · Upload Chat Export</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="logo">🐱</div>
+        <div>
+          <p class="brand__name">ChatCat</p>
+          <p class="brand__meta">Whatsapp classifier</p>
+        </div>
+        <button class="sidebar__toggle" id="sidebarToggle" aria-label="Collapse sidebar">◀</button>
+      </div>
+      <nav class="nav">
+        <button class="nav__item" onclick="location.href='../index.html'">Dashboard</button>
+        <button class="nav__item" onclick="location.href='workspaces.html'">Workspaces</button>
+        <button class="nav__item" onclick="location.href='contextual-search.html'">Contextual Search</button>
+        <button class="nav__item active" onclick="location.href='upload.html'">Upload</button>
+        <button class="nav__item" onclick="location.href='emotion-scan.html'">Emotion Scan</button>
+      </nav>
+      <div class="sidebar__footer">
+        <label class="toggle">
+          <input type="checkbox" id="seniorToggle" />
+          <span>Senior-friendly UI</span>
+        </label>
+        <div class="user">
+          <div class="avatar">CC</div>
+          <div>
+            <p class="user__name">Demo User</p>
+            <p class="user__meta">demo@chatcat.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- UPLOAD PAGE -->
+      <div class="page active" id="page-upload" data-page="upload">
+        <header class="topbar">
+          <h2>Upload WhatsApp Chat</h2>
+          <p class="muted">Your Exported Chat Zip Folder</p>
+        </header>
+        
+        <section class="panel">
+          <div class="upload-container">
+            <!-- Upload Zone -->
+            <div class="upload-zone">
+              <div class="dropzone-wrapper">
+                <div class="cloud-icon">☁️</div>
+                <p class="dropzone-text">Drop .zip here</p>
+                <button class="primary" id="browseBtn">Browse Files</button>
+                <input type="file" id="fileInput" accept=".zip" style="display: none;" />
+              </div>
+
+              <!-- Upload Progress -->
+              <div class="upload-progress" id="uploadProgress" style="display: none;">
+                <p class="progress-label">Uploading: <span id="fileName">filename.zip</span></p>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <!-- Scan Button -->
+              <button class="primary block" id="scanBtn" style="margin-top: 16px;">SCAN</button>
+
+              <!-- Exclude from AI Training -->
+              <label class="toggle" style="margin-top: 16px;">
+                <input type="checkbox" id="excludeAITraining" />
+                <span>Exclude from AI training</span>
+              </label>
+              <p class="muted" style="font-size: 12px; margin-top: 4px;">Helping you improve ChatCat: <br> Opting out keeps your chats 100% private—we never use them for AI training. <br> Allowing training (unchecked) makes our tone analysis smarter for everyone while fully anonymizing your data</p>
+            </div>
+
+            <!-- Recent Uploads -->
+            <div class="recent-uploads">
+              <div class="recent-header">
+                <h3>Recent Uploads</h3>
+                <button class="ghost" style="font-size: 14px;">⋮</button>
+              </div>
+              <div class="uploads-list" id="uploadsList">
+                <div class="upload-item">
+                  <div class="upload-status">
+                    <div class="status-dot completed"></div>
+                    <div>
+                      <p class="upload-name">NYP DIT AY25-26</p>
+                      <p class="upload-meta">80mb</p>
+                    </div>
+                  </div>
+                  <button class="ghost" style="font-size: 12px;">⋮</button>
+                </div>
+                <div class="upload-item">
+                  <div class="upload-status">
+                    <div class="status-dot completed"></div>
+                    <div>
+                      <p class="upload-name">Doloct</p>
+                      <p class="upload-meta">35mb</p>
+                    </div>
+                  </div>
+                  <button class="ghost" style="font-size: 12px;">⋮</button>
+                </div>
+                <div class="upload-item">
+                  <div class="upload-status">
+                    <div class="status-dot completed"></div>
+                    <div>
+                      <p class="upload-name">Doloct</p>
+                      <p class="upload-meta">135mb</p>
+                    </div>
+                  </div>
+                  <button class="ghost" style="font-size: 12px;">⋮</button>
+                </div>
+                <div class="upload-item">
+                  <div class="upload-status">
+                    <div class="status-dot completed"></div>
+                    <div>
+                      <p class="upload-name">Doloct</p>
+                      <p class="upload-meta">20kb</p>
+                    </div>
+                  </div>
+                  <button class="ghost" style="font-size: 12px;">⋮</button>
+                </div>
+                <div class="upload-item">
+                  <div class="upload-status">
+                    <div class="status-dot processing"></div>
+                    <div>
+                      <p class="upload-name">Uploct</p>
+                      <p class="upload-meta">1440 1440.500 - 145ks</p>
+                    </div>
+                  </div>
+                  <button class="ghost" style="font-size: 12px;">⋮</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="../script-shared.js"></script>
+  <script src="../pages-shared.js"></script>
+</body>
+</html>
