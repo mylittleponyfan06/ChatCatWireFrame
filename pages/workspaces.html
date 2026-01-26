@@ -22,7 +22,7 @@
       </div>
       <nav class="nav">
         <button class="nav__item" onclick="location.href='../index.html'">Dashboard</button>
-        <button class="nav__item active" onclick="location.href='workspaces.html'">Workspaces</button>
+        <button class="nav__item active" data-page="workspaces">Workspaces</button>
         <button class="nav__item" onclick="location.href='contextual-search.html'">Contextual Search</button>
         <button class="nav__item" onclick="location.href='upload.html'">Upload</button>
         <button class="nav__item" onclick="location.href='emotion-scan.html'">Emotion Scan</button>
@@ -43,46 +43,342 @@
     </aside>
 
     <main class="main">
-      <!-- WORKSPACES PAGE -->
-      <div class="page active" id="page-workspaces" data-page="workspaces">
+      <!-- SCREEN 1: Projects Overview -->
+      <div class="workspace-screen active" id="screen-overview">
         <header class="topbar">
-          <h2>Workspaces</h2>
+          <h2>Projects</h2>
+          <button class="primary" id="newProjectBtn">+ New</button>
+        </header>
+        
+        <section class="panel">
+          <div class="projects-list">
+            <div class="project-card" onclick="switchScreen('categories')">
+              <div class="project-header">
+                <div>
+                  <h4 class="project-name">PFM Group Project 1</h4>
+                  <p class="project-meta">Last imported: 2 hours ago</p>
+                </div>
+              </div>
+              <div class="project-stats">
+                <div class="stat-mini">
+                  <span class="stat-label">Incoming Files</span>
+                  <span class="stat-value">5</span>
+                </div>
+                <div class="stat-mini">
+                  <span class="stat-label">Backups</span>
+                  <span class="stat-value">3</span>
+                </div>
+              </div>
+              <div class="project-actions">
+                <button class="ghost" onclick="event.stopPropagation()">Open</button>
+                <button class="ghost danger" onclick="event.stopPropagation()">Delete</button>
+              </div>
+            </div>
+
+            <div class="project-card" onclick="switchScreen('files')">
+              <div class="project-header">
+                <div>
+                  <h4 class="project-name">PFM Group Project 2</h4>
+                  <p class="project-meta">Last imported: 1 day ago</p>
+                </div>
+              </div>
+              <div class="project-stats">
+                <div class="stat-mini">
+                  <span class="stat-label">Incoming Files</span>
+                  <span class="stat-value">20</span>
+                </div>
+                <div class="stat-mini">
+                  <span class="stat-label">Backups</span>
+                  <span class="stat-value">1</span>
+                </div>
+              </div>
+              <div class="project-actions">
+                <button class="ghost" onclick="event.stopPropagation()">Open</button>
+                <button class="ghost danger" onclick="event.stopPropagation()">Delete</button>
+              </div>
+            </div>
+
+            <div class="project-card">
+              <div class="project-header">
+                <div>
+                  <h4 class="project-name">PFM Group Project 3</h4>
+                  <p class="project-meta">Last imported: 3 days ago</p>
+                </div>
+              </div>
+              <div class="project-stats">
+                <div class="stat-mini">
+                  <span class="stat-label">Incoming Files</span>
+                  <span class="stat-value">205</span>
+                </div>
+                <div class="stat-mini">
+                  <span class="stat-label">Backups</span>
+                  <span class="stat-value">8</span>
+                </div>
+              </div>
+              <div class="project-actions">
+                <button class="ghost" onclick="event.stopPropagation()">Open</button>
+                <button class="ghost danger" onclick="event.stopPropagation()">Delete</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- SCREEN 2: Categories/Incoming Files -->
+      <div class="workspace-screen" id="screen-categories">
+        <header class="topbar">
+          <div class="breadcrumbs">
+            <span class="breadcrumb-item" onclick="switchScreen('overview')">Projects</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item" onclick="switchScreen('overview')">PFM Group Project 1</span>
+          </div>
           <div class="topbar__actions">
-            <button class="ghost">+ New workspace</button>
+            <button class="ghost" onclick="switchScreen('overview')">Back</button>
           </div>
         </header>
-        <section class="panel">
-          <div class="panel__header">
-            <h3>Your workspaces</h3>
-          </div>
-          <div class="workspace-form">
-            <input type="text" id="workspaceNameInput" placeholder="New workspace name" />
-            <button class="primary" id="createWorkspaceBtn">Create</button>
-          </div>
-          <div class="workspaces-list" id="workspacesList"></div>
-        </section>
 
-        <section class="panel" id="workspaceDetailPanel" style="display: none;">
-          <div class="panel__header">
-            <button class="ghost" id="backToWorkspacesBtn">Back to workspaces</button>
-            <h3 id="workspaceDetailTitle">Workspace details</h3>
-          </div>
-          <div id="workspaceDetailContent"></div>
-        </section>
         <section class="panel">
-          <div class="panel__header">
-            <h3>Import WhatsApp zip</h3>
+          <h3>Incoming Files</h3>
+          <p class="muted">Drag and drop your files to the categories below! Click on any file to see more information.</p>
+          
+          <div class="incoming-files-preview">
+            <div class="file-placeholder">📄</div>
+            <div class="file-placeholder">📄</div>
+            <div class="file-placeholder">📄</div>
+            <div class="file-placeholder">📄</div>
+            <div class="file-placeholder">📄</div>
           </div>
-          <div class="dropzone">Drop WhatsApp zip files here or browse</div>
-          <button class="primary" id="importBtn" style="margin-top: 12px;">Select zip file</button>
-          <ul class="list" id="queueList"></ul>
+
+          <h3 style="margin-top: 32px;">Categories</h3>
+          <div class="categories-grid">
+            <div class="category-card">
+              <div class="category-name">Drafts</div>
+              <div class="category-placeholder">
+                <p>📄</p>
+                <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+              </div>
+              <button class="ghost" style="width: 100%; margin-top: 12px;">+ Add files</button>
+            </div>
+
+            <div class="category-card">
+              <div class="category-name">Slides</div>
+              <div class="category-placeholder">
+                <p>📊</p>
+                <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+              </div>
+              <button class="ghost" style="width: 100%; margin-top: 12px;">+ Add files</button>
+            </div>
+
+            <div class="category-card">
+              <div class="category-name">References</div>
+              <div class="category-placeholder">
+                <p>📚</p>
+                <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+              </div>
+              <button class="ghost" style="width: 100%; margin-top: 12px;">+ Add files</button>
+            </div>
+
+            <div class="category-card">
+              <div class="category-name">Final Deliverables</div>
+              <div class="category-placeholder">
+                <p>✓</p>
+                <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+              </div>
+              <button class="ghost" style="width: 100%; margin-top: 12px;">+ Add files</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- SCREEN 3: Import Flow -->
+      <div class="workspace-screen" id="screen-import">
+        <header class="topbar">
+          <div class="breadcrumbs">
+            <span class="breadcrumb-item" onclick="switchScreen('overview')">Projects</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item">PFM Group Project 1</span>
+          </div>
+          <div class="topbar__actions">
+            <button class="ghost" onclick="switchScreen('overview')">Back</button>
+          </div>
+        </header>
+
+        <section class="panel">
+          <div class="import-card">
+            <h4 style="margin: 0 0 8px;">Import WhatsApp Backup</h4>
+            <p class="muted" style="margin: 0 0 16px;">Last imported: --</p>
+            <div class="import-dropzone">
+              <p style="margin: 0; font-size: 18px;">☁️</p>
+              <p style="margin: 6px 0 0;">Choose or drag your WhatsApp export</p>
+            </div>
+            <button class="primary block" style="margin-top: 12px;">Import Backup</button>
+          </div>
+
+          <h3 style="margin-top: 28px;">Incoming Files</h3>
+          <p class="muted" style="margin: 0 0 12px;">5 files need categorization</p>
+          
+          <div class="incoming-files-preview">
+            <div class="file-placeholder">📄</div>
+            <div class="file-placeholder">📄</div>
+            <div class="file-placeholder">📄</div>
+            <div class="file-placeholder">📄</div>
+            <div class="file-placeholder">📄</div>
+          </div>
+
+          <h3 style="margin-top: 28px;">Categories</h3>
+          <div class="categories-grid">
+            <div class="category-card">
+              <div class="category-name">Drafts</div>
+              <div class="category-placeholder">
+                <p>📄</p>
+                <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+              </div>
+              <button class="ghost" style="width: 100%; margin-top: 12px;">+ 10 more</button>
+            </div>
+
+            <div class="category-card">
+              <div class="category-name">Slides</div>
+              <div class="category-placeholder">
+                <p>📊</p>
+                <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+              </div>
+              <button class="ghost" style="width: 100%; margin-top: 12px;">+ 10 more</button>
+            </div>
+
+            <div class="category-card">
+              <div class="category-name">References</div>
+              <div class="category-placeholder">
+                <p>📚</p>
+                <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+              </div>
+              <button class="ghost" style="width: 100%; margin-top: 12px;">+ 10 more</button>
+            </div>
+
+            <div class="category-card">
+              <div class="category-name">Final Deliverables</div>
+              <div class="category-placeholder">
+                <p>✓</p>
+                <p class="muted" style="font-size: 12px; margin-top: 8px;">Preview</p>
+              </div>
+              <button class="ghost" style="width: 100%; margin-top: 12px;">+ 10 more</button>
+            </div>
+          </div>
+
+          <div class="import-actions" style="margin-top: 28px;">
+            <button class="ghost" onclick="switchScreen('overview')">Back</button>
+            <button class="primary">Review & Continue</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- SCREEN 4: Files/Deliverables List -->
+      <div class="workspace-screen" id="screen-files">
+        <header class="topbar">
+          <div class="breadcrumbs">
+            <span class="breadcrumb-item" onclick="switchScreen('overview')">Projects</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item" onclick="switchScreen('categories')">PFM Group Project 2</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item">Incoming Files</span>
+          </div>
+          <div class="topbar__actions">
+            <button class="ghost" onclick="switchScreen('overview')">Back</button>
+          </div>
+        </header>
+
+        <section class="panel">
+          <div class="files-toolbar">
+            <div class="files-toolbar-actions">
+              <button class="primary" onclick="toggleAllCheckboxes()">Export Selected</button>
+              <button class="secondary">Export All</button>
+              <input type="text" placeholder="Search files..." class="files-search" />
+            </div>
+          </div>
+
+          <div class="files-list">
+            <div class="file-row">
+              <div class="file-checkbox-wrapper">
+                <input type="checkbox" class="file-checkbox" />
+              </div>
+              <div class="file-info">
+                <div class="file-name">Slides.pptx</div>
+                <div class="file-meta">Sent by You • Latest</div>
+              </div>
+              <div class="file-actions">
+                <span class="file-date">10 September 2025, 11:30 PM</span>
+                <button class="ghost">Export</button>
+              </div>
+            </div>
+
+            <div class="file-row">
+              <div class="file-checkbox-wrapper">
+                <input type="checkbox" class="file-checkbox" />
+              </div>
+              <div class="file-info">
+                <div class="file-name">Report.docx</div>
+                <div class="file-meta">Sent by Charlotte • Latest</div>
+              </div>
+              <div class="file-actions">
+                <span class="file-date">11 September 2025, 12:30 PM</span>
+                <button class="ghost">Export</button>
+              </div>
+            </div>
+
+            <div class="file-row">
+              <div class="file-checkbox-wrapper">
+                <input type="checkbox" class="file-checkbox" />
+              </div>
+              <div class="file-info">
+                <div class="file-name">Spreadsheet.xlsx</div>
+                <div class="file-meta">Sent by Coco • Latest</div>
+              </div>
+              <div class="file-actions">
+                <span class="file-date">11 September 2025, 01:30 PM</span>
+                <button class="ghost">Export</button>
+              </div>
+            </div>
+
+            <div class="file-row">
+              <div class="file-checkbox-wrapper">
+                <input type="checkbox" class="file-checkbox" />
+              </div>
+              <div class="file-info">
+                <div class="file-name">Final.pdf</div>
+                <div class="file-meta">Sent by You • Latest</div>
+              </div>
+              <div class="file-actions">
+                <span class="file-date">12 September 2025, 02:15 PM</span>
+                <button class="ghost">Export</button>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 28px;">Preview</h3>
+          <div class="files-preview-grid">
+            <div class="preview-card">
+              <div class="preview-thumbnail">📄</div>
+              <p class="preview-name">Slides.pptx</p>
+            </div>
+            <div class="preview-card">
+              <div class="preview-thumbnail">📄</div>
+              <p class="preview-name">Report.docx</p>
+            </div>
+            <div class="preview-card">
+              <div class="preview-thumbnail">📊</div>
+              <p class="preview-name">Spreadsheet.xlsx</p>
+            </div>
+            <div class="preview-card">
+              <div class="preview-thumbnail">📋</div>
+              <p class="preview-name">Final.pdf</p>
+            </div>
+          </div>
         </section>
       </div>
     </main>
   </div>
 
   <div class="toast-container" id="toastContainer"></div>
-  <script src="../script-shared.js"></script>
   <script src="../pages-shared.js"></script>
+  <script src="workspaces-script.js"></script>
 </body>
 </html>
