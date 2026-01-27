@@ -1576,31 +1576,38 @@ button.block { width: 100%; margin-top: 10px; }
 /* Categories & Incoming Files */
 .incoming-files-preview {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
   margin: 16px 0 24px;
 }
 
 .file-placeholder {
   aspect-ratio: 1;
   background: var(--panel-strong);
-  border: 2px dashed var(--border);
-  border-radius: 12px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  transition: all 0.2s;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text);
+  gap: 6px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
   cursor: grab;
 }
 
 .file-placeholder:hover {
   border-color: var(--accent);
-  background: rgba(88, 198, 255, 0.08);
+  background: rgba(88, 198, 255, 0.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
 }
 
 .file-placeholder:active {
   cursor: grabbing;
+  transform: scale(0.98);
 }
 
 .categories-grid {

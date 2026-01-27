@@ -47,6 +47,23 @@ function switchScreen(screenName) {
 
 // Switch to a specific category and show Files screen
 let currentCategory = 'Drafts';
+let currentProjectName = 'PFM Group Project 1';
+
+function setCurrentProject(name) {
+  currentProjectName = name || 'PFM Group Project 1';
+  const categoriesCrumb = document.getElementById('breadcrumbProjectCategories');
+  const importCrumb = document.getElementById('breadcrumbProjectImport');
+  const filesCrumb = document.getElementById('breadcrumbProjectFiles');
+  [categoriesCrumb, importCrumb, filesCrumb].forEach(function(node) {
+    if (node) node.textContent = currentProjectName;
+  });
+}
+
+function openProject(name) {
+  setCurrentProject(name);
+  switchScreen('categories');
+  toast('Opening ' + currentProjectName);
+}
 
 function switchToCategory(categoryName) {
   currentCategory = categoryName;
@@ -109,8 +126,12 @@ function exportFile(fileName) {
 }
 
 // Handle category file drop (mock drag-drop)
-function handleCategoryDrop(categoryName) {
-  toast('Files would be categorized as: ' + categoryName);
+function handleCategoryDrop(categoryName, fileName) {
+  if (fileName) {
+    toast('"' + fileName + '" moved to ' + categoryName);
+  } else {
+    toast('Files would be categorized as: ' + categoryName);
+  }
 }
 
 // Sidebar toggle
@@ -145,6 +166,9 @@ if (seniorToggle) {
 
 // File search functionality with live filtering
 document.addEventListener('DOMContentLoaded', function() {
+  // Initialize breadcrumbs with default project
+  setCurrentProject(currentProjectName);
+
   const searchInput = document.querySelector('.files-search');
   if (searchInput) {
     searchInput.addEventListener('keyup', function(e) {
@@ -238,6 +262,39 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         card.click();
       }
+    });
+  });
+
+  // Drag-drop: incoming files -> categories (Incoming view)
+  const incomingFiles = document.querySelectorAll('#files-incoming-view .file-placeholder');
+  incomingFiles.forEach(function(file) {
+    file.setAttribute('draggable', 'true');
+    file.addEventListener('dragstart', function(e) {
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', file.dataset.fileName || file.textContent.trim());
+    });
+  });
+
+  const incomingDropTargets = document.querySelectorAll('#files-incoming-view .category-card');
+  incomingDropTargets.forEach(function(card) {
+    const categoryNameNode = card.querySelector('.category-name');
+    const categoryName = categoryNameNode ? categoryNameNode.textContent : 'Category';
+    let originalShadow = card.style.boxShadow;
+
+    card.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      card.style.boxShadow = '0 0 0 2px var(--accent)';
+    });
+
+    card.addEventListener('dragleave', function() {
+      card.style.boxShadow = originalShadow;
+    });
+
+    card.addEventListener('drop', function(e) {
+      e.preventDefault();
+      card.style.boxShadow = originalShadow;
+      const fileName = e.dataTransfer.getData('text/plain') || 'File';
+      handleCategoryDrop(categoryName, fileName);
     });
   });
 
