@@ -44,32 +44,86 @@
     </aside>
 
     <main class="main">
-      <!-- CONTEXTUAL SEARCH PAGE -->
       <div class="page active" id="page-search" data-page="search">
         <header class="topbar">
           <h2>Contextual Search</h2>
           <button class="ghost" id="advancedFiltersBtn">Advanced filters</button>
         </header>
+
         <section class="panel">
           <div class="search-panel">
-            <input type="text" placeholder="Search by meaning: 'math assignment photos' or 'deadline mentions'" id="contextualInput" />
-            <button class="primary" id="contextualSearchBtn">Search</button>
+            <input type="text" placeholder="Try: 'math assignment'" id="searchInput" />
+            <button class="primary" id="searchBtn">Search</button>
           </div>
-        </section>
-        <section class="panel" id="searchResultsPanel">
-          <div class="panel__header">
-            <h3>Results</h3>
-          </div>
-          <div class="contextual" id="searchResults"></div>
         </section>
 
-        <section class="panel" id="searchDetailPanel" style="display: none;">
+        <section class="panel">
           <div class="panel__header">
-            <button class="ghost" id="backToResultsBtn">← Back to results</button>
-            <h3 id="detailTitle">Result details</h3>
+            <h3>Recent searches</h3>
+          </div>
+          <div class="history-grid" id="historyGrid"></div>
+        </section>
+
+        <section class="panel" id="resultsPanel" style="display: none;">
+          <div class="panel__header">
+            <h3>Results (<span id="resultCount">0</span>)</h3>
+            <div class="results-actions">
+              <button class="ghost" id="selectAllBtn" style="display: none;">Select all</button>
+              <button class="ghost" id="viewDetailsBtn" style="display: none;">View details</button>
+              <button class="primary" id="addToWorkspaceBtn" style="display: none;">Add to workspace</button>
+              <button class="ghost" id="tagForReviewBtn" style="display: none;">Tag items</button>
+            </div>
+          </div>
+          <div id="resultsList"></div>
+        </section>
+
+        <section class="panel" id="detailPanel" style="display: none;">
+          <div class="panel__header">
+            <button class="ghost" id="backBtn">← Back</button>
+            <h3 id="detailTitle"></h3>
           </div>
           <div id="detailContent"></div>
         </section>
+
+        <!-- Tag Menu -->
+        <div class="tag-menu" id="tagMenu" style="display: none;">
+          <div class="tag-menu-content">
+            <p style="margin: 0 0 12px 0; font-weight: 600;">Tag selected items:</p>
+            <button class="tag-option" data-tag="interesting">⭐ Interesting</button>
+            <button class="tag-option" data-tag="follow-up">🔔 Follow-up</button>
+            <button class="tag-option" data-tag="archive">📦 Archive</button>
+            <button class="tag-option" data-tag="important">⚠️ Important</button>
+            <button class="ghost" style="width: 100%; margin-top: 8px;" id="closeTagMenuBtn">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Action Confirmation Display -->
+        <div class="action-confirmation" id="actionConfirmation" style="display: none;">
+          <div class="confirmation-content">
+            <div class="confirmation-header">
+              <span class="confirmation-icon" id="confirmationIcon">✓</span>
+              <h4 id="confirmationTitle">Items tagged</h4>
+            </div>
+            <div class="confirmation-body">
+              <p id="confirmationMessage">2 items tagged as Interesting</p>
+              <div class="confirmation-details">
+                <div class="detail-row">
+                  <span class="detail-label">Type:</span>
+                  <span class="detail-value" id="detailType">Tag</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Category:</span>
+                  <span class="detail-value" id="detailCategory">Interesting</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Count:</span>
+                  <span class="detail-value" id="detailCount">2 items</span>
+                </div>
+              </div>
+            </div>
+            <button class="ghost" style="width: 100%; margin-top: 12px;" id="closeConfirmationBtn">Done</button>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -78,147 +132,324 @@
   <script src="../script-shared.js"></script>
   <script src="../pages-shared.js"></script>
   <script>
-    // Contextual search specific functionality
-    const contextualInput = document.getElementById('contextualInput');
-    const contextualSearchBtn = document.getElementById('contextualSearchBtn');
-    const advancedFiltersBtn = document.getElementById('advancedFiltersBtn');
-    const searchResults = document.getElementById('searchResults');
-    const backToResultsBtn = document.getElementById('backToResultsBtn');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const historyGrid = document.getElementById('historyGrid');
+    const resultsList = document.getElementById('resultsList');
+    const resultsPanel = document.getElementById('resultsPanel');
+    const detailPanel = document.getElementById('detailPanel');
+    const resultCount = document.getElementById('resultCount');
+    const backBtn = document.getElementById('backBtn');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailContent = document.getElementById('detailContent');
+    const tagMenu = document.getElementById('tagMenu');
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const viewDetailsBtn = document.getElementById('viewDetailsBtn');
+    const addToWorkspaceBtn = document.getElementById('addToWorkspaceBtn');
+    const tagForReviewBtn = document.getElementById('tagForReviewBtn');
+    const closeTagMenuBtn = document.getElementById('closeTagMenuBtn');
+    const actionConfirmation = document.getElementById('actionConfirmation');
+    const closeConfirmationBtn = document.getElementById('closeConfirmationBtn');
 
-    // Sample contextual search results
-    const contextual = [
-      { title: 'Find: soccer practice photos', meta: '8 attachments - 12 Jul 2025 - AI tags: sports, kids', type: 'attachments', items: [
-        { name: 'soccer-practice-01.jpg', size: '2.4 MB', date: '12 Jul 3:45 PM', sender: 'Kai' },
-        { name: 'soccer-practice-02.jpg', size: '3.1 MB', date: '12 Jul 3:46 PM', sender: 'Kai' },
-        { name: 'soccer-practice-03.jpg', size: '2.8 MB', date: '12 Jul 3:47 PM', sender: 'Kai' },
-        { name: 'soccer-goal-highlight.mp4', size: '8.5 MB', date: '12 Jul 4:00 PM', sender: 'Mom' },
-        { name: 'team-photo.jpg', size: '4.2 MB', date: '12 Jul 4:15 PM', sender: 'Coach' }
-      ]},
-      { title: 'Tone: frustrated message from Kai', meta: 'Detected tone: Frustrated - 1 message - 09 Jan 2026', type: 'messages', items: [
-        { sender: 'Kai', text: 'I cannot believe the project deadline moved again. This is the third time!', time: '09 Jan 2:15 PM', tone: 'Frustrated' },
-        { sender: 'Kai', text: 'How am I supposed to deliver quality work with these constant changes?', time: '09 Jan 2:16 PM', tone: 'Frustrated' }
-      ]},
-      { title: 'Ask: invoices sent last quarter', meta: '6 docs - 3 senders - Aug-Oct 2025', type: 'documents', items: [
-        { name: 'Q3-Invoice-2025.pdf', size: '1.2 MB', date: '30 Oct 9:00 AM', sender: 'Finance' },
-        { name: 'Invoice-Aug-2025.xlsx', size: '0.8 MB', date: '31 Aug 10:30 AM', sender: 'Accounting' },
-        { name: 'Invoice-Sep-2025.xlsx', size: '0.9 MB', date: '30 Sep 2:00 PM', sender: 'Accounting' },
-        { name: 'Invoice-Oct-2025.xlsx', size: '0.85 MB', date: '31 Oct 3:15 PM', sender: 'Accounting' }
-      ]},
-      { title: 'Search: mentions of assignment', meta: '24 hits - math, chem - Attachment count: 5', type: 'mixed', items: [
-        { type: 'message', sender: 'Jasmine', text: 'Math assignment due Friday', time: '15 Jan 1:20 PM' },
-        { type: 'message', sender: 'Kai', text: 'Can you review my chemistry assignment?', time: '15 Jan 3:45 PM' },
-        { type: 'attachment', name: 'math-assignment-draft.pdf', size: '0.5 MB', date: '15 Jan 4:05 PM' },
-        { type: 'message', sender: 'Jasmine', text: 'Sure, send it over', time: '15 Jan 4:00 PM' },
-        { type: 'attachment', name: 'chem-lab-report.docx', size: '1.1 MB', date: '15 Jan 5:20 PM' }
-      ]}
-    ];
+    let selectedItems = new Set();
+    let currentResults = [];
 
-    function renderContextual() {
-      searchResults.innerHTML = '';
-      contextual.forEach(function(c, index) {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.setAttribute('data-index', index);
-        card.innerHTML = '<p class="card__title">' + c.title + '</p><p class="card__meta">' + c.meta + '</p>';
-        card.addEventListener('click', function() {
-          showSearchDetail(index);
-        });
-        searchResults.appendChild(card);
-      });
-      if (contextual.length > 0) {
-        document.getElementById('searchResultsPanel').classList.add('active');
+    const tagNames = {
+      'interesting': '⭐ Interesting',
+      'follow-up': '🔔 Follow-up',
+      'archive': '📦 Archive',
+      'important': '⚠️ Important'
+    };
+
+    const samples = {
+      'soccer practice photos': {
+        title: 'Find: soccer practice photos',
+        meta: '5 items - attachments',
+        items: [
+          { name: 'soccer-practice-01.jpg', size: '2.4 MB', date: '12 Jul 3:45 PM', sender: 'Kai' },
+          { name: 'soccer-practice-02.jpg', size: '3.1 MB', date: '12 Jul 3:46 PM', sender: 'Kai' },
+          { name: 'soccer-practice-03.jpg', size: '2.8 MB', date: '12 Jul 3:47 PM', sender: 'Kai' },
+          { name: 'soccer-goal-highlight.mp4', size: '8.5 MB', date: '12 Jul 4:00 PM', sender: 'Mom' },
+          { name: 'team-photo.jpg', size: '4.2 MB', date: '12 Jul 4:15 PM', sender: 'Coach' }
+        ]
+      },
+      'math assignment': {
+        title: 'Find: math assignment',
+        meta: '4 items - documents',
+        items: [
+          { name: 'algebra-assignment.pdf', size: '0.9 MB', date: '15 Jan 1:00 PM', sender: 'Jasmine' },
+          { name: 'math-homework-help.docx', size: '0.5 MB', date: '15 Jan 2:30 PM', sender: 'Kai' },
+          { name: 'calculus-notes.pdf', size: '1.2 MB', date: '16 Jan 10:15 AM', sender: 'You' },
+          { name: 'solution-guide.xlsx', size: '0.8 MB', date: '16 Jan 11:45 AM', sender: 'Teacher' }
+        ]
+      },
+      'frustrated messages': {
+        title: 'Tone: frustrated messages',
+        meta: '2 items - emotional tone',
+        items: [
+          { sender: 'Kai', text: 'I cannot believe the project deadline moved again. This is the third time!', time: '09 Jan 2:15 PM' },
+          { sender: 'Kai', text: 'How am I supposed to deliver quality work with these constant changes?', time: '09 Jan 2:16 PM' }
+        ]
+      },
+      'invoices and receipts': {
+        title: 'Find: invoices and receipts',
+        meta: '6 items - financial documents',
+        items: [
+          { name: 'Q3-Invoice-2025.pdf', size: '1.2 MB', date: '30 Oct 9:00 AM', sender: 'Finance' },
+          { name: 'Invoice-Aug-2025.xlsx', size: '0.8 MB', date: '31 Aug 10:30 AM', sender: 'Accounting' },
+          { name: 'Invoice-Sep-2025.xlsx', size: '0.9 MB', date: '30 Sep 2:00 PM', sender: 'Accounting' },
+          { name: 'Invoice-Oct-2025.xlsx', size: '0.85 MB', date: '31 Oct 3:15 PM', sender: 'Accounting' },
+          { name: 'Receipt-Q3-summary.pdf', size: '0.6 MB', date: '02 Nov 11:00 AM', sender: 'CFO' },
+          { name: 'Expense-report-Q3.docx', size: '0.7 MB', date: '01 Nov 9:30 AM', sender: 'You' }
+        ]
+      },
+      'deadline mentions': {
+        title: 'Search: deadline mentions',
+        meta: '8 items - mixed results',
+        items: [
+          { sender: 'Jasmine', text: 'Math assignment due Friday', time: '15 Jan 1:20 PM' },
+          { sender: 'Mom', text: 'Project deadline is next Tuesday', time: '16 Jan 10:00 AM' },
+          { name: 'deadline-checklist.pdf', size: '0.5 MB', date: '15 Jan 4:05 PM' },
+          { sender: 'Coach', text: 'Registration deadline extended to Sunday', time: '14 Jan 6:15 PM' },
+          { name: 'project-timeline.docx', size: '1.1 MB', date: '15 Jan 5:20 PM' },
+          { sender: 'You', text: 'Reminder: submission deadline tomorrow', time: '16 Jan 3:00 PM' },
+          { sender: 'Teacher', text: 'Grades due by end of month', time: '16 Jan 2:45 PM' }
+        ]
+      },
+      'mentions of assignment': {
+        title: 'Search: mentions of assignment',
+        meta: '12 items - multiple subjects',
+        items: [
+          { sender: 'Jasmine', text: 'Math assignment due Friday', time: '15 Jan 1:20 PM' },
+          { sender: 'Kai', text: 'Can you review my chemistry assignment?', time: '15 Jan 3:45 PM' },
+          { sender: 'You', text: 'English assignment is 5 pages', time: '14 Jan 8:00 PM' },
+          { name: 'math-assignment-draft.pdf', size: '0.5 MB', date: '15 Jan 4:05 PM' },
+          { sender: 'Teacher', text: 'Great work on the last assignment!', time: '13 Jan 2:30 PM' },
+          { name: 'chem-lab-assignment.docx', size: '1.1 MB', date: '15 Jan 5:20 PM' },
+          { sender: 'Kai', text: 'Is the assignment due tonight?', time: '15 Jan 7:15 PM' },
+          { name: 'essay-assignment.txt', size: '0.2 MB', date: '14 Jan 8:30 PM' },
+          { sender: 'Jasmine', text: 'I finished my assignment early', time: '14 Jan 9:45 PM' },
+          { sender: 'Mom', text: 'How is that assignment coming along?', time: '15 Jan 6:00 PM' },
+          { name: 'assignment-rubric.pdf', size: '0.7 MB', date: '13 Jan 10:00 AM' },
+          { sender: 'Coach', text: 'Assignment for next practice: run drills', time: '12 Jan 4:30 PM' }
+        ]
+      },
+      'celebratory messages': {
+        title: 'Tone: celebratory messages',
+        meta: '3 items - positive emotions',
+        items: [
+          { sender: 'Mom', text: 'We got the house! 🎉', time: '22 Jan 5:45 PM' },
+          { sender: 'Jasmine', text: 'YES! We WON the match!', time: '18 Jan 7:30 PM' },
+          { sender: 'Coach', text: 'Great work everyone! So proud of you all!', time: '18 Jan 7:35 PM' }
+        ]
+      },
+      'birthday planning': {
+        title: 'Search: birthday planning',
+        meta: '12 items - event planning',
+        items: [
+          { sender: 'Mom', text: 'We should plan something special for your birthday', time: '20 Jan 5:15 PM' },
+          { sender: 'Jasmine', text: 'Birthday party next weekend?', time: '20 Jan 6:30 PM' },
+          { sender: 'You', text: 'I like cake and games', time: '20 Jan 7:00 PM' },
+          { name: 'party-ideas.pdf', size: '0.8 MB', date: '20 Jan 5:45 PM' },
+          { sender: 'Kai', text: 'Birthday decorations - colors?', time: '21 Jan 10:00 AM' },
+          { name: 'decoration-photos.zip', size: '3.2 MB', date: '21 Jan 10:30 AM' },
+          { sender: 'Mom', text: 'Birthday cake ordered', time: '21 Jan 2:30 PM' },
+          { sender: 'Coach', text: 'Can you come to birthday celebration?', time: '19 Jan 4:15 PM' },
+          { name: 'guest-list.xlsx', size: '0.4 MB', date: '20 Jan 8:00 PM' },
+          { sender: 'You', text: 'Birthday is Jan 25th!', time: '18 Jan 11:30 AM' },
+          { sender: 'Jasmine', text: 'Cant wait for your birthday!', time: '20 Jan 9:00 PM' },
+          { name: 'birthday-invites.pdf', size: '1.1 MB', date: '20 Jan 7:45 PM' }
+        ]
       }
+    };
+
+    function updateActionButtons() {
+      const hasSelection = selectedItems.size > 0;
+      selectAllBtn.style.display = currentResults.length > 0 ? 'block' : 'none';
+      viewDetailsBtn.style.display = hasSelection ? 'block' : 'none';
+      addToWorkspaceBtn.style.display = hasSelection ? 'block' : 'none';
+      tagForReviewBtn.style.display = hasSelection ? 'block' : 'none';
     }
 
-    function showSearchDetail(index) {
-      const result = contextual[index];
-      if (!result) return;
-      
-      const detailPanel = document.getElementById('searchDetailPanel');
-      const detailTitle = document.getElementById('detailTitle');
-      const detailContent = document.getElementById('detailContent');
-      
-      detailTitle.textContent = result.title;
-      
-      let html = '';
-      
-      if (result.type === 'messages') {
-        html = '<div class="message-list">';
-        result.items.forEach(function(item) {
-          html += '<div class="message-item"><div class="message-sender">' + item.sender + '</div><p class="message-text">' + item.text + '</p><div class="message-time">' + item.time + '</div></div>';
-        });
-        html += '</div>';
-      } else if (result.type === 'attachments') {
-        html = '<div class="attachment-list">';
-        result.items.forEach(function(item) {
-          const ext = item.name.split('.').pop().toUpperCase();
-          html += '<div class="attachment-item"><div class="attachment-type-icon">' + ext + '</div><div class="attachment-info"><p class="attachment-title">' + item.name + '</p><div class="attachment-meta">' + item.sender + ' - ' + item.size + ' - ' + item.date + '</div></div></div>';
-        });
-        html += '</div>';
-      } else if (result.type === 'documents') {
-        html = '<div class="document-list">';
-        result.items.forEach(function(item) {
-          const ext = item.name.split('.').pop().toUpperCase();
-          html += '<div class="document-item"><div class="document-icon">' + ext + '</div><div class="document-info"><p class="document-name">' + item.name + '</p><div class="document-meta">' + item.sender + ' - ' + item.size + ' - ' + item.date + '</div></div></div>';
-        });
-        html += '</div>';
-      } else if (result.type === 'mixed') {
-        html = '<div class="mixed-list">';
-        result.items.forEach(function(item) {
-          if (item.type === 'message') {
-            html += '<div class="mixed-item item-message"><div class="message-sender">' + item.sender + '</div><p class="message-text">' + item.text + '</p><div class="message-time">' + item.time + '</div></div>';
-          } else if (item.type === 'attachment') {
-            const ext = item.name.split('.').pop().toUpperCase();
-            html += '<div class="mixed-item"><div class="item-attachment"><div class="item-attachment-icon">' + ext + '</div><div class="item-attachment-info"><p class="item-attachment-name">' + item.name + '</p><div class="item-attachment-meta">' + item.size + ' - ' + item.date + '</div></div></div></div>';
-          }
-        });
-        html += '</div>';
-      }
-      
-      detailContent.innerHTML = html;
-      detailPanel.style.display = 'block';
-      document.getElementById('searchResultsPanel').style.display = 'none';
-    }
-
-    function runContextSearch() {
-      const query = contextualInput.value.trim();
+    function doSearch() {
+      const query = searchInput.value.trim();
       if (!query) {
-        toast('Type a search to see results.');
+        alert('Enter a search query');
         return;
       }
-      contextual.unshift({ title: 'Search: ' + query, meta: 'Semantic match - attachments + messages', type: 'mixed', items: [
-        { type: 'message', sender: 'You', text: 'Searching for: ' + query, time: 'Just now' },
-        { type: 'attachment', name: query + '-results.pdf', size: '0.8 MB', date: 'Just now' }
-      ]});
-      renderContextual();
-      toast('Found results for "' + query + '"');
-    }
 
-    if (contextualSearchBtn) {
-      contextualSearchBtn.addEventListener('click', runContextSearch);
-    }
+      let result;
+      if (samples[query]) {
+        result = samples[query];
+      } else {
+        result = { title: 'Search: ' + query, meta: 'Custom search', items: [{ sender: 'System', text: 'Searching for: ' + query }] };
+      }
 
-    if (contextualInput) {
-      contextualInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') runContextSearch();
+      currentResults = result.items;
+      selectedItems.clear();
+      resultCount.textContent = result.items.length;
+      resultsList.innerHTML = '';
+      
+      result.items.forEach(function(item, idx) {
+        const div = document.createElement('div');
+        div.className = 'card';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'card-checkbox';
+        checkbox.addEventListener('change', function(e) {
+          e.stopPropagation();
+          if (checkbox.checked) {
+            selectedItems.add(idx);
+          } else {
+            selectedItems.delete(idx);
+          }
+          updateActionButtons();
+        });
+        
+        const label = document.createElement('div');
+        label.style.flex = '1';
+        let labelText = item.name || (item.text ? (item.sender ? item.sender + ': ' + item.text : item.text) : 'Item');
+        label.textContent = labelText;
+        
+        div.appendChild(checkbox);
+        div.appendChild(label);
+        div.addEventListener('click', function(e) {
+          checkbox.checked = !checkbox.checked;
+          if (checkbox.checked) {
+            selectedItems.add(idx);
+          } else {
+            selectedItems.delete(idx);
+          }
+          updateActionButtons();
+        });
+        resultsList.appendChild(div);
       });
+
+      resultsPanel.style.display = 'block';
+      detailPanel.style.display = 'none';
+      updateActionButtons();
     }
 
-    if (advancedFiltersBtn) {
-      advancedFiltersBtn.addEventListener('click', function() {
-        toast('Filters: tone + attachment type + date range');
+    function showSelectedDetails() {
+      if (selectedItems.size === 0) return;
+      
+      const selectedIndices = Array.from(selectedItems);
+      const selectedResults = selectedIndices.map(function(idx) { return currentResults[idx]; });
+      
+      detailTitle.textContent = 'Selected Items (' + selectedItems.size + ')';
+      detailContent.innerHTML = selectedResults.map(function(item) {
+        if (item.sender) return '<div style="padding: 12px; border-bottom: 1px solid var(--border);"><strong>' + item.sender + ':</strong> ' + item.text + ' <span style="color: #8d92a3; font-size: 12px;">' + item.time + '</span></div>';
+        return '<div style="padding: 12px; border-bottom: 1px solid var(--border);"><strong>[' + item.name.split('.').pop().toUpperCase() + ']</strong> ' + item.name + ' <span style="color: #8d92a3;">(' + item.size + ')</span> - ' + item.date + '</div>';
+      }).join('');
+      resultsPanel.style.display = 'none';
+      detailPanel.style.display = 'block';
+    }
+
+    function showTagMenu() {
+      if (selectedItems.size === 0) {
+        alert('Select items first');
+        return;
+      }
+      tagMenu.style.display = 'block';
+    }
+
+    function closeTagMenu() {
+      tagMenu.style.display = 'none';
+    }
+
+    function tagItems(tagName) {
+      const count = selectedItems.size;
+      const tagDisplayName = tagNames[tagName] || tagName;
+      
+      document.getElementById('confirmationIcon').textContent = '🏷️';
+      document.getElementById('confirmationTitle').textContent = 'Items Tagged';
+      document.getElementById('confirmationMessage').textContent = count + ' item(s) tagged as ' + tagDisplayName;
+      document.getElementById('detailType').textContent = 'Tag';
+      document.getElementById('detailCategory').textContent = tagDisplayName;
+      document.getElementById('detailCount').textContent = count + ' item' + (count !== 1 ? 's' : '');
+      
+      actionConfirmation.style.display = 'block';
+      tagMenu.style.display = 'none';
+      selectedItems.clear();
+      updateActionButtons();
+    }
+
+    function addToWorkspace() {
+      if (selectedItems.size === 0) {
+        alert('Select items first');
+        return;
+      }
+      
+      const count = selectedItems.size;
+      document.getElementById('confirmationIcon').textContent = '📦';
+      document.getElementById('confirmationTitle').textContent = 'Added to Workspace';
+      document.getElementById('confirmationMessage').textContent = count + ' item(s) added to workspace';
+      document.getElementById('detailType').textContent = 'Workspace';
+      document.getElementById('detailCategory').textContent = 'Default';
+      document.getElementById('detailCount').textContent = count + ' item' + (count !== 1 ? 's' : '');
+      
+      actionConfirmation.style.display = 'block';
+      selectedItems.clear();
+      updateActionButtons();
+    }
+
+    // Event listeners
+    searchBtn.addEventListener('click', doSearch);
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') doSearch();
+    });
+    backBtn.addEventListener('click', function() {
+      detailPanel.style.display = 'none';
+      resultsPanel.style.display = 'block';
+    });
+    document.getElementById('advancedFiltersBtn').addEventListener('click', function() {
+      alert('Filters: tone + attachment type + date range');
+    });
+
+    // Action buttons
+    viewDetailsBtn.addEventListener('click', showSelectedDetails);
+    tagForReviewBtn.addEventListener('click', showTagMenu);
+    closeTagMenuBtn.addEventListener('click', closeTagMenu);
+    closeConfirmationBtn.addEventListener('click', function() {
+      actionConfirmation.style.display = 'none';
+    });
+    addToWorkspaceBtn.addEventListener('click', addToWorkspace);
+    selectAllBtn.addEventListener('click', function() {
+      if (selectedItems.size === currentResults.length) {
+        selectedItems.clear();
+      } else {
+        selectedItems.clear();
+        for (let i = 0; i < currentResults.length; i++) {
+          selectedItems.add(i);
+        }
+      }
+      updateActionButtons();
+      document.querySelectorAll('.card-checkbox').forEach(function(cb, idx) {
+        cb.checked = selectedItems.has(idx);
       });
-    }
+    });
 
-    if (backToResultsBtn) {
-      backToResultsBtn.addEventListener('click', function() {
-        document.getElementById('searchDetailPanel').style.display = 'none';
-        document.getElementById('searchResultsPanel').style.display = 'block';
+    // Tag options
+    document.querySelectorAll('.tag-option').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const tag = this.getAttribute('data-tag');
+        tagItems(tag);
       });
-    }
+    });
 
-    // Initialize
-    renderContextual();
+    // Populate history
+    const historyQueries = ['soccer practice photos', 'frustrated messages', 'invoices and receipts', 'birthday planning'];
+    historyQueries.forEach(function(query) {
+      const btn = document.createElement('button');
+      btn.className = 'history-item';
+      btn.textContent = query;
+      btn.addEventListener('click', function() {
+        searchInput.value = query;
+        doSearch();
+      });
+      historyGrid.appendChild(btn);
+    });
   </script>
 </body>
 </html>

@@ -2191,6 +2191,236 @@ button.block { width: 100%; margin-top: 10px; }
   color: var(--muted);
 }
 
+/* Contextual Search Enhancements */
+.search-panel {
+  display: flex;
+  gap: 8px;
+}
+
+.search-panel input {
+  flex: 1;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.history-item {
+  padding: 12px 16px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-size: 13px;
+  color: var(--text);
+  font-family: var(--font-1);
+  line-height: 1.4;
+}
+
+.history-item:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.history-item:active {
+  transform: scale(0.98);
+}
+
+/* Search Results with Selection */
+.card-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-right: 12px;
+  cursor: pointer;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 12px;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  background: rgba(88, 198, 255, 0.05);
+}
+
+.card .card__title {
+  margin: 0;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.card .card__meta {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Results Actions */
+.results-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.results-actions button {
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+#selectAllBtn, #addToWorkspaceBtn, #tagForReviewBtn {
+  font-size: 13px;
+}
+
+/* Tag Menu */
+.tag-menu {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  z-index: 100;
+  min-width: 240px;
+  max-width: 90%;
+}
+
+.tag-menu-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tag-option {
+  padding: 10px 14px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font-1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.tag-option:hover {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+  color: var(--bg);
+}
+
+.action-confirmation {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-width: 320px;
+  max-width: 420px;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.confirmation-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.confirmation-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.confirmation-icon {
+  font-size: 32px;
+  line-height: 1;
+  min-width: 40px;
+  text-align: center;
+}
+
+.confirmation-header h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.confirmation-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.confirmation-body p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-light, #c4c7d0);
+  line-height: 1.5;
+}
+
+.confirmation-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--panel-strong);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.detail-label {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.detail-value {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 @media (max-width: 820px) {
   .upload-container {
     grid-template-columns: 1fr;
@@ -2198,5 +2428,21 @@ button.block { width: 100%; margin-top: 10px; }
   
   .recent-uploads {
     max-height: none;
+  }
+
+  .query-chips {
+    gap: 6px;
+  }
+
+  .query-chip {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .tag-menu {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    transform: none;
   }
 }
