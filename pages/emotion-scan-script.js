@@ -3,6 +3,8 @@
 // State
 let selectedChat = null;
 let draftMessage = null;
+let selectedTone = null;
+let selectedSuggestedText = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
@@ -47,6 +49,17 @@ function initializeEmotionScan() {
       navigateToScreen('emotion-main');
     });
   }
+  
+  // Set Reminder buttons on facts/feelings screen
+  const setReminderBtns = document.querySelectorAll('#emotion-facts-feelings .primary');
+  setReminderBtns.forEach(function(btn) {
+    if (btn.textContent.includes('Set Reminder')) {
+      btn.addEventListener('click', function() {
+        const actionText = this.closest('.message-item').querySelector('p').textContent;
+        toast('⏰ Reminder set for: ' + actionText);
+      });
+    }
+  });
 
   // Screen 3: Draft Composer
   const backToMainBtn2 = document.getElementById('backToMainBtn2');
@@ -85,6 +98,7 @@ function initializeEmotionScan() {
 
   // Screen 4: Rewrite Suggestions
   const backToComposerBtn = document.getElementById('backToComposerBtn');
+  const editDraftBtn = document.getElementById('editDraftBtn');
   const toPreviewBtn = document.getElementById('toPreviewBtn');
 
   if (backToComposerBtn) {
@@ -93,8 +107,19 @@ function initializeEmotionScan() {
     });
   }
 
+  if (editDraftBtn) {
+    editDraftBtn.addEventListener('click', function() {
+      navigateToScreen('emotion-draft-composer');
+    });
+  }
+
   if (toPreviewBtn) {
     toPreviewBtn.addEventListener('click', function() {
+      // Get the current suggested text from textarea
+      const suggestedTextarea = document.querySelector('#emotion-rewrite textarea');
+      if (suggestedTextarea) {
+        selectedSuggestedText = suggestedTextarea.value;
+      }
       navigateToScreen('emotion-preview');
     });
   }
@@ -109,6 +134,26 @@ function initializeEmotionScan() {
       });
       this.style.background = 'linear-gradient(135deg, rgba(88, 198, 255, 0.15), rgba(106, 228, 184, 0.15))';
       this.style.border = '2px solid var(--accent)';
+      
+      // Update suggested text based on tone selection
+      const toneText = this.textContent.trim();
+      const suggestedTextarea = document.querySelector('#emotion-rewrite textarea');
+      
+      // Store the selected tone
+      selectedTone = toneText;
+      
+      if (suggestedTextarea) {
+        if (toneText === 'Direct') {
+          suggestedTextarea.value = 'I wanted to discuss the deadline for the project. I\'m currently managing multiple priorities and finding it challenging to focus due to ADHD-related difficulties. Could we review the timeline or priorities to ensure quality delivery?';
+        } else if (toneText === 'Polite') {
+          suggestedTextarea.value = 'I hope you\'re well Jeff! The project deadline feels quite challenging given my current workload and ADHD-related focus difficulties. Would it be possible to discuss adjusting the timeline or priorities?';
+        } else if (toneText === 'Casual') {
+          suggestedTextarea.value = 'This deadline feels a bit tight for me. I\'m juggling a lot right now and ADHD is making it tough to focus. Can we chat about adjusting the timeline or priorities?';
+        }
+        
+        // Store the suggested text
+        selectedSuggestedText = suggestedTextarea.value;
+      }
     });
   });
 
@@ -134,9 +179,11 @@ function initializeEmotionScan() {
     copyBtn.addEventListener('click', function() {
       const previewText = document.querySelector('#emotion-preview .message-item, #emotion-preview [style*="background: var(--panel-strong)"]');
       if (previewText) {
-        const textToCopy = draftMessage || 'Message content';
+        const textToCopy = selectedSuggestedText || draftMessage || 'Message content';
         navigator.clipboard.writeText(textToCopy).then(function() {
-          toast('Copied to clipboard!');
+          toast('✓ Copied to clipboard!');
+        }).catch(function() {
+          toast('Failed to copy to clipboard');
         });
       }
     });
@@ -176,6 +223,17 @@ function navigateToScreen(screenId) {
       const s2ChatTitle = document.getElementById('s2ChatTitle');
       if (s2ChatTitle) {
         s2ChatTitle.textContent = selectedChat + ' - Analysis';
+      }
+    }
+    
+    // Update preview message in Screen 5
+    if (screenId === 'emotion-preview' && selectedSuggestedText) {
+      const previewMessageDiv = document.querySelector('#emotion-preview [style*="background: linear-gradient"]');
+      if (previewMessageDiv) {
+        const messageParagraph = previewMessageDiv.querySelector('p');
+        if (messageParagraph) {
+          messageParagraph.textContent = selectedSuggestedText;
+        }
       }
     }
   }

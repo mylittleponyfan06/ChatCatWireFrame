@@ -34,11 +34,11 @@ const emotions = [
 ];
 
 const recentUploads = [
-  { name: 'Doloct', time: '1440 1440.500 - 145ks', status: 'completed' },
-  { name: 'Doloct', time: '1440 1440.500 - 145ks', status: 'completed' },
-  { name: 'Doloct', time: '1440 1440.500 - 145ks', status: 'completed' },
-  { name: 'Doloct', time: '1440 1440.500 - 145ks', status: 'completed' },
-  { name: 'Uploct', time: '1440 1440.500 - 145ks', status: 'processing' },
+  { name: 'Sim Family GC', time: '5 MB', status: 'completed' },
+  { name: 'Church Group', time: '15 MB', status: 'completed' },
+  { name: 'Work Group Chat', time: '25 MB', status: 'completed' },
+  { name: 'Old Friends Reunion', time: '5MB', status: 'completed' },
+  { name: 'Mahjong Nights', time: '4 MB', status: 'processing' },
 ];
 
 // DOM elements

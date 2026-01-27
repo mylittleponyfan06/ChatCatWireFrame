@@ -89,11 +89,11 @@
                   <option value="">-- Choose uploaded chat --</option>
                   <option value="Sim Family GC">Sim Family GC (5 MB)</option>
                   <option value="Church Group">Church Group (15 MB)</option>
-                  <option value="Neighbourhood Watch">Neighbourhood Watch (4 MB)</option>
+                  <option value="Work Group Chat">Work Group Chat (25 MB)</option>
                   <option value="Old Friends Reunion">Old Friends Reunion (5 MB)</option>
                   <option value="Mahjong Nights">Mahjong Nights (4 MB)</option>
                 </select>
-                <p class="muted" style="font-size: 12px; margin: 6px 0 0; text-align: left;">Don't see your chat? <button class="ghost" style="font-size: 12px; padding: 0; text-decoration: underline;" title="Upload more chats">Upload here</button></p>
+                <p class="muted" style="font-size: 12px; margin: 6px 0 0; text-align: left;">Don't see your chat? <button class="ghost" style="font-size: 12px; padding: 0; text-decoration: underline;" title="Upload more chats" onclick="location.href='upload.html'"">Upload here</button></p>
               </div>
               <div style="flex: 1;">
                 <div class="card" style="min-height: 100px; display: flex; flex-direction: column;">
@@ -336,7 +336,7 @@
                   <button class="ghost" style="font-size: 12px; padding: 6px 8px; border-radius: 8px;" title="Bullet list">∘ List</button>
                   <button class="ghost" style="font-size: 12px; padding: 6px 8px; border-radius: 8px;" title="Numbered list">1. List</button>
                 </div>
-                <textarea id="draftText" style="width: 100%; min-height: 180px; padding: 12px; border: none; background: var(--panel-strong); color: var(--text); resize: vertical; font-family: inherit; font-size: 14px; line-height: 1.6;" placeholder="Type your message here...&#10;Example: 'Can we discuss the budget proposal before Friday?'">I wanted to reach out and see if we could discuss the budget proposal. I think we should review it together before the deadline.</textarea>
+                <textarea id="draftText" style="width: 100%; min-height: 180px; padding: 12px; border: none; background: var(--panel-strong); color: var(--text); resize: vertical; font-family: inherit; font-size: 14px; line-height: 1.6;" placeholder="Type your message here...&#10;Example: 'Can we discuss the budget proposal before Friday?'">This deadline is unreasonable pls lah what is this nonsense, I'm drowning in tasks and can't focus because ADHD brain says no.</textarea>
               </div>
               <div style="display: flex; justify-content: space-between; margin-top: 8px;">
                 <span class="muted" style="font-size: 12px;">Character count: <span id="charCount">147</span>/500</span>
@@ -398,7 +398,7 @@
                 <span class="muted" style="font-size: 12px; font-weight: 400;">(147 chars)</span>
               </h4>
               <div style="padding: 14px; border-radius: 12px; background: var(--panel-strong); border: 1px solid var(--border); min-height: 180px; color: var(--muted); font-size: 14px; line-height: 1.6;">
-                <p style="margin: 0;">I wanted to reach out and see if we could discuss the budget proposal. I think we should review it together before the deadline.</p>
+                <p style="margin: 0;">This deadline is unreasonable pls lah what is this nonsense, I'm drowning in tasks and can't focus because ADHD brain says no.</p>
               </div>
               <div style="display: flex; gap: 8px; margin-top: 10px;">
                 <span class="pill pill--ghost" style="font-size: 11px;">More verbose</span>
@@ -412,7 +412,7 @@
                 <span>✨ Suggested</span>
                 <span class="muted" style="font-size: 12px; font-weight: 400;">(84 chars)</span>
               </h4>
-              <textarea style="width: 100%; min-height: 180px; padding: 14px; border-radius: 12px; background: var(--panel-strong); border: 2px solid var(--accent); color: var(--text); resize: none; font-size: 14px; line-height: 1.6; font-family: inherit;" title="Edit this suggestion to your liking">Let's discuss the budget proposal. I'd like to review it with you before the deadline.</textarea>
+              <textarea style="width: 100%; min-height: 180px; padding: 14px; border-radius: 12px; background: var(--panel-strong); border: 2px solid var(--accent); color: var(--text); resize: none; font-size: 14px; line-height: 1.6; font-family: inherit;" title="Edit this suggestion to your liking">I wanted to discuss the deadline for the project. I'm currently managing multiple priorities and finding it challenging to focus due to ADHD-related difficulties. Could we review the timeline or priorities to ensure quality delivery?</textarea>
               <div style="display: flex; gap: 8px; margin-top: 10px;">
                 <span class="pill pill--success" style="font-size: 11px;">37% shorter</span>
                 <span class="pill pill--success" style="font-size: 11px;">Clear & direct</span>
@@ -430,7 +430,7 @@
                 <button class="pill" style="justify-content: center; padding: 10px 12px; border-radius: 10px; background: transparent; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;" title="Relaxed and friendly">Casual</button>
               </div>
               <button class="primary block" id="toPreviewBtn" style="margin-top: auto;" title="Accept this version and proceed">→ Use This Version</button>
-              <button class="ghost block" style="margin-top: 8px;" title="Edit message again">← Edit Draft</button>
+              <button class="ghost block" id="editDraftBtn" style="margin-top: 8px;" title="Edit message again">← Edit Draft</button>
             </div>
           </div>
         </section>
@@ -458,7 +458,7 @@
             <div style="width: 100%; max-width: 480px;">
               <p class="muted" style="font-size: 12px; margin: 0 0 8px; text-align: center;">Message preview</p>
               <div style="background: linear-gradient(135deg, rgba(88, 198, 255, 0.12), rgba(106, 228, 184, 0.08)); border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px; width: 100%;">
-                <p style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--text); font-weight: 500;">Let's discuss the budget proposal. I'd like to review it with you before the deadline.</p>
+                <p style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--text); font-weight: 500;">I wanted to discuss the deadline for [project]. I'm currently managing multiple priorities and finding it challenging to focus due to ADHD-related difficulties. Could we review the timeline or priorities to ensure quality delivery?</p>
               </div>
             </div>
 
