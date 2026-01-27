@@ -47,16 +47,64 @@
       <div class="page active" id="page-search" data-page="search">
         <header class="topbar">
           <h2>Contextual Search</h2>
-          <button class="ghost" id="advancedFiltersBtn">Advanced filters</button>
         </header>
 
         <section class="panel">
           <div class="search-panel">
             <input type="text" placeholder="Try: 'math assignment'" id="searchInput" />
             <button class="primary" id="searchBtn">Search</button>
+            <button class="ghost" id="advancedFiltersBtn">Advanced filters</button>
           </div>
         </section>
-
+        <section class="panel" id="filtersPanel" style="display: none;">
+          <div class="panel__header">
+            <h3>Advanced Filters</h3>
+            <button class="ghost" id="clearFiltersBtn">Clear all</button>
+          </div>
+          <div class="filters-grid">
+            <div class="filter-group">
+              <h4 class="filter-label">Tone</h4>
+              <label class="filter-option">
+                <input type="checkbox" name="tone" value="frustrated" class="tone-filter" />
+                <span>😠 Frustrated</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="tone" value="excited" class="tone-filter" />
+                <span>🎉 Excited/Celebratory</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="tone" value="neutral" class="tone-filter" />
+                <span>😐 Neutral</span>
+              </label>
+            </div>
+            <div class="filter-group">
+              <h4 class="filter-label">Type</h4>
+              <label class="filter-option">
+                <input type="checkbox" name="type" value="messages" class="type-filter" />
+                <span>💬 Messages</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="type" value="images" class="type-filter" />
+                <span>🖼️ Images</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="type" value="documents" class="type-filter" />
+                <span>📄 Documents</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="type" value="videos" class="type-filter" />
+                <span>🎥 Videos</span>
+              </label>
+            </div>
+            <div class="filter-group">
+              <h4 class="filter-label">Date Range</h4>
+              <div class="date-inputs">
+                <input type="date" id="dateFrom" placeholder="From" />
+                <input type="date" id="dateTo" placeholder="To" />
+              </div>
+            </div>
+          </div>
+        </section>
         <section class="panel">
           <div class="panel__header">
             <h3>Recent searches</h3>
@@ -282,15 +330,61 @@
       if (samples[query]) {
         result = samples[query];
       } else {
-        result = { title: 'Search: ' + query, meta: 'Custom search', items: [{ sender: 'System', text: 'Searching for: ' + query }] };
+        // For custom searches, search across all sample data
+        let allItems = [];
+        for (const key in samples) {
+          allItems = allItems.concat(samples[key].items);
+        }
+        
+        // Check if searching by sender (e.g., "from kai")
+        const fromMatch = query.toLowerCase().match(/from\s+(\w+)/);
+        const senderFilter = fromMatch ? fromMatch[1].toLowerCase() : null;
+        
+        if (senderFilter) {
+          allItems = allItems.filter(function(item) {
+            return item.sender && item.sender.toLowerCase().includes(senderFilter);
+          });
+        }
+        
+        result = { 
+          title: 'Search: ' + query, 
+          meta: 'Custom search', 
+          items: allItems.length > 0 ? allItems : [{ sender: 'System', text: 'Searching for: ' + query }]
+        };
       }
 
-      currentResults = result.items;
+      // Apply filters
+      let filteredItems = result.items;
+      
+      // Tone filters
+      const selectedTones = Array.from(document.querySelectorAll('.tone-filter:checked')).map(function(cb) { return cb.value; });
+      if (selectedTones.length > 0) {
+        filteredItems = filteredItems.filter(function(item) {
+          if (selectedTones.includes('frustrated') && item.sender === 'Kai' && item.text && item.text.toLowerCase().includes('cannot')) return true;
+          if (selectedTones.includes('excited') && item.text && (item.text.includes('!') || item.text.includes('🎉'))) return true;
+          if (selectedTones.includes('neutral') && item.sender && !item.text.includes('!')) return true;
+          return false;
+        });
+      }
+      
+      // Type filters
+      const selectedTypes = Array.from(document.querySelectorAll('.type-filter:checked')).map(function(cb) { return cb.value; });
+      if (selectedTypes.length > 0) {
+        filteredItems = filteredItems.filter(function(item) {
+          if (selectedTypes.includes('messages') && item.sender && item.text) return true;
+          if (selectedTypes.includes('images') && item.name && (item.name.endsWith('.jpg') || item.name.endsWith('.png'))) return true;
+          if (selectedTypes.includes('documents') && item.name && (item.name.endsWith('.pdf') || item.name.endsWith('.docx') || item.name.endsWith('.xlsx'))) return true;
+          if (selectedTypes.includes('videos') && item.name && item.name.endsWith('.mp4')) return true;
+          return false;
+        });
+      }
+
+      currentResults = filteredItems;
       selectedItems.clear();
-      resultCount.textContent = result.items.length;
+      resultCount.textContent = filteredItems.length;
       resultsList.innerHTML = '';
       
-      result.items.forEach(function(item, idx) {
+      filteredItems.forEach(function(item, idx) {
         const div = document.createElement('div');
         div.className = 'card';
         
@@ -403,8 +497,22 @@
       detailPanel.style.display = 'none';
       resultsPanel.style.display = 'block';
     });
+    const filtersPanel = document.getElementById('filtersPanel');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    let filtersVisible = false;
+
     document.getElementById('advancedFiltersBtn').addEventListener('click', function() {
-      alert('Filters: tone + attachment type + date range');
+      filtersVisible = !filtersVisible;
+      filtersPanel.style.display = filtersVisible ? 'block' : 'none';
+      this.textContent = filtersVisible ? 'Hide filters' : 'Advanced filters';
+    });
+
+    clearFiltersBtn.addEventListener('click', function() {
+      document.querySelectorAll('.tone-filter, .type-filter').forEach(function(cb) {
+        cb.checked = false;
+      });
+      document.getElementById('dateFrom').value = '';
+      document.getElementById('dateTo').value = '';
     });
 
     // Action buttons
