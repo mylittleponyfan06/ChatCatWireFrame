@@ -551,6 +551,7 @@ button.block { width: 100%; margin-top: 10px; }
   flex-direction: column;
   gap: 12px;
   align-items: flex-start;
+  color: var(--text);
 }
 
 .dashboard-card:hover {
@@ -567,6 +568,7 @@ button.block { width: 100%; margin-top: 10px; }
   margin: 0;
   font-size: 16px;
   font-weight: 600;
+  color: var(--text);
 }
 
 .dashboard-card p {
