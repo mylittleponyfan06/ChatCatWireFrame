@@ -662,6 +662,20 @@ button.block { width: 100%; margin-top: 10px; }
   color: var(--muted);
 }
 
+.summary-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#readAloudBtn {
+  display: none;
+}
+
+.senior #readAloudBtn {
+  display: inline-flex;
+}
+
 .chatbot-window {
   display: flex;
   flex-direction: column;
@@ -1124,6 +1138,17 @@ button.block { width: 100%; margin-top: 10px; }
 }
 
 /* Senior-friendly mode */
+.senior {
+  --bg: #0b0c10;
+  --panel: #14161b;
+  --panel-strong: #1c1f26;
+  --text: #ffffff;
+  --muted: #cfd6e6;
+  --border: #3a3f4b;
+  --accent: #7dd3ff;
+  --accent-2: #7ff0c3;
+}
+
 .senior .app { 
   font-size: 18px;
   grid-template-columns: auto 1fr !important;
@@ -1132,38 +1157,39 @@ button.block { width: 100%; margin-top: 10px; }
 .senior .sidebar { 
   display: flex !important;
   flex-direction: column;
-  width: 180px !important;
-  min-width: 180px !important;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px !important;
-  gap: 30px !important;
+  width: 240px !important;
+  min-width: 240px !important;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 24px 18px !important;
+  gap: 18px !important;
 }
 
 .senior .brand { 
-  display: none !important;
+  display: flex !important;
 }
 
 .senior .nav {
   display: flex !important;
   flex-direction: column !important;
-  gap: 30px !important;
+  gap: 14px !important;
   width: 100% !important;
 }
 
 .senior .nav__item {
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: row !important;
   align-items: center !important;
-  justify-content: center !important;
-  padding: 50px 30px !important;
-  font-size: 24px !important;
+  justify-content: flex-start !important;
+  padding: 18px 16px !important;
+  font-size: 20px !important;
   font-weight: 700 !important;
   background: var(--panel-strong) !important;
   border: 2px solid var(--border) !important;
-  border-radius: 24px !important;
-  min-height: 160px !important;
+  border-radius: 18px !important;
+  min-height: 64px !important;
   width: 100% !important;
+  color: var(--text) !important;
 }
 
 .senior .nav__item:hover {
@@ -1172,7 +1198,8 @@ button.block { width: 100%; margin-top: 10px; }
 }
 
 .senior .sidebar__footer {
-  display: none !important;
+  display: flex !important;
+  gap: 12px;
 }
 
 .senior .main {
@@ -1200,7 +1227,7 @@ button.block { width: 100%; margin-top: 10px; }
 .senior .topbar { font-size: 24px; }
 .senior .topbar h2 { font-size: 28px; }
 .senior .topbar button { font-size: 18px; padding: 12px 24px; }
-.senior .nav__item { font-size: 18px; padding: 16px; }
+.senior .nav__item { font-size: 20px; padding: 18px 16px; }
 .senior .main { display: flex; }
 #newWorkspaceModal {
   display: none !important;
@@ -1215,12 +1242,37 @@ button.block { width: 100%; margin-top: 10px; }
 .senior h4 { font-size: 24px; }
 .senior .dashboard-card { padding: 40px; font-size: 22px; min-height: 200px; }
 .senior .dashboard-icon { font-size: 72px; }
+.senior .dashboard-card h4 { color: var(--text); }
+.senior .dashboard-card p { color: var(--muted); }
 .senior .workspace-item { padding: 24px; font-size: 18px; }
 .senior .card { padding: 28px; font-size: 18px; }
 .senior .search-result, .senior .emotion__item { padding: 24px; font-size: 18px; }
 .senior .emotion__item { border-radius: 24px; }
 .senior input, .senior textarea { padding: 16px; font-size: 18px; border-radius: 16px; }
 .senior .primary, .senior .ghost { padding: 16px 32px; font-size: 20px; border-radius: 16px; }
+.senior button.primary {
+  background: #7dd3ff;
+  color: #0b0c10;
+  border: 2px solid #7dd3ff;
+}
+.senior button.ghost {
+  background: var(--panel-strong);
+  border: 2px solid var(--border);
+  color: var(--text);
+}
+.senior button.ghost:hover {
+  border-color: var(--accent);
+  background: var(--panel);
+}
+.senior .panel,
+.senior .card,
+.senior .dashboard-card,
+.senior .workspace-item,
+.senior .search-result,
+.senior .emotion__item {
+  background: var(--panel);
+  border-color: var(--border);
+}
 
 .toast-container {
   position: fixed;
