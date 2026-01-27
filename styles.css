@@ -90,8 +90,12 @@ body {
   transition: grid-template-columns 0.3s ease;
 }
 
-.app.sidebar-collapsed {
-  grid-template-columns: 86px 1fr;
+.app .sidebar.collapsed ~ .main {
+  width: calc(100% - 86px);
+}
+
+.sidebar.collapsed ~ .main {
+  grid-column: 2;
 }
 
 .sidebar {
@@ -101,8 +105,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 280px;
-  transition: width 0.3s ease, padding 0.3s ease;
 }
 
 .brand {
@@ -135,7 +137,7 @@ body {
   cursor: pointer;
 }
 
-.nav { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.nav { display: flex; flex-direction: column; gap: 6px; }
 .nav__item {
   text-align: left;
   background: transparent;
@@ -145,7 +147,6 @@ body {
   border-radius: 12px;
   cursor: pointer;
   transition: background 0.2s, border 0.2s;
-  white-space: nowrap;
 }
 .nav__item:hover { background: var(--panel-strong); }
 .nav__item.active { border: 1px solid var(--border); background: var(--panel-strong); }
@@ -158,21 +159,17 @@ body {
 
 .sidebar.collapsed .brand { 
   display: flex !important;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0;
-  margin-bottom: 0;
-  padding: 8px 0;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .sidebar.collapsed .logo { display: none; }
 .sidebar.collapsed .brand > div { display: none; }
 .sidebar.collapsed .sidebar__toggle { 
-  display: flex !important;
+  display: block !important;
   margin: 0 !important;
-  width: 40px;
-  height: 40px;
 }
 
 .sidebar.collapsed .brand__name, 
@@ -182,7 +179,8 @@ body {
 .sidebar.collapsed .toggle span { display: none; }
 
 .sidebar.collapsed .nav__item {
-  padding: 8px !important;
+  padding: 14px !important;
+  font-size: 0;
   height: 50px;
   width: 50px;
   display: flex;
@@ -190,26 +188,17 @@ body {
   justify-content: center;
   border-radius: 12px;
   position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
-  background: transparent;
-  border: 1px solid transparent;
-  color: transparent;
-  font-size: 0;
 }
 
 .sidebar.collapsed .nav__item::before {
   font-size: 28px;
   line-height: 1;
-  margin: 0;
-  color: var(--text);
 }
 
 /* Icons for collapsed sidebar */
 .nav__item[data-page="dashboard"]::before { content: '🏠'; }
 .nav__item[data-page="workspaces"]::before { content: '📁'; }
 .nav__item[data-page="search"]::before { content: '🔍'; }
-.nav__item[data-page="upload"]::before { content: '📤'; }
 .nav__item[data-page="emotion"]::before { content: '❤️'; }
 
 .sidebar.collapsed .sidebar__footer { display: none; }
