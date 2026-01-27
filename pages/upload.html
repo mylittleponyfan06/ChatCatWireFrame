@@ -21,11 +21,11 @@
         <button class="sidebar__toggle" id="sidebarToggle" aria-label="Collapse sidebar">◀</button>
       </div>
       <nav class="nav">
-        <button class="nav__item" onclick="location.href='../index.html'">Dashboard</button>
-        <button class="nav__item" onclick="location.href='workspaces.html'">Workspaces</button>
-        <button class="nav__item" onclick="location.href='contextual-search.html'">Contextual Search</button>
-        <button class="nav__item active" onclick="location.href='upload.html'">Upload</button>
-        <button class="nav__item" onclick="location.href='emotion-scan.html'">Emotion Scan</button>
+        <button class="nav__item" data-page="dashboard" data-href="../index.html">Dashboard</button>
+        <button class="nav__item" data-page="workspaces" data-href="workspaces.html">Workspaces</button>
+        <button class="nav__item" data-page="search" data-href="contextual-search.html">Contextual Search</button>
+        <button class="nav__item active" data-page="upload" data-href="upload.html">Upload</button>
+        <button class="nav__item" data-page="emotion" data-href="emotion-scan.html">Emotion Scan</button>
       </nav>
       <div class="sidebar__footer">
         <label class="toggle">
@@ -146,7 +146,8 @@
   </div>
 
   <div class="toast-container" id="toastContainer"></div>
-  <script src="../script-shared.js"></script>
-  <script src="../pages-shared.js"></script>
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="../js/shared-data.js"></script>
+  <script src="../js/pages.js"></script>
 </body>
 </html>

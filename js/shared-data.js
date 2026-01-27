@@ -41,47 +41,75 @@ const recentUploads = [
   { name: 'Uploct', time: '1440 1440.500 - 145ks', status: 'processing' },
 ];
 
-// DOM elements
-const toastContainer = document.getElementById('toastContainer');
-const sidebarToggle = document.getElementById('sidebarToggle');
-const seniorToggle = document.getElementById('seniorToggle');
-const appRoot = document.getElementById('app');
-
 // Toast notification
 function toast(message) {
+  const toastContainer = document.getElementById('toastContainer');
   const node = document.createElement('div');
   node.className = 'toast';
   node.textContent = message;
-  toastContainer.appendChild(node);
-  requestAnimationFrame(function() { node.classList.add('show'); });
-  setTimeout(function() { node.classList.remove('show'); }, 2400);
-  setTimeout(function() { node.remove(); }, 2800);
+  if (toastContainer) {
+    toastContainer.appendChild(node);
+    requestAnimationFrame(function() { node.classList.add('show'); });
+    setTimeout(function() { node.classList.remove('show'); }, 2400);
+    setTimeout(function() { node.remove(); }, 2800);
+  }
 }
 
-// Sidebar toggle
-if (sidebarToggle) {
-  sidebarToggle.addEventListener('click', function() {
-    const sidebar = document.querySelector('.sidebar');
-    const app = document.querySelector('.app');
-    sidebar.classList.toggle('collapsed');
-    
-    if (sidebar.classList.contains('collapsed')) {
-      app.style.gridTemplateColumns = '86px 1fr';
-      sidebar.style.width = '86px';
+// Initialize sidebar and senior mode for all pages
+document.addEventListener('DOMContentLoaded', function() {
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const seniorToggle = document.getElementById('seniorToggle');
+  const appRoot = document.getElementById('app');
+
+  // Restore collapsed state from localStorage
+  const sidebar = document.querySelector('.sidebar');
+  const app = document.querySelector('.app');
+  const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+  
+  if (isCollapsed && sidebar && app) {
+    sidebar.classList.add('collapsed');
+    app.classList.add('sidebar-collapsed');
+    if (sidebarToggle) {
       sidebarToggle.textContent = '▶';
-    } else {
-      app.style.gridTemplateColumns = '280px 1fr';
-      sidebar.style.width = '280px';
-      sidebarToggle.textContent = '◀';
     }
-  });
-}
+  }
 
-// Senior mode toggle
-if (seniorToggle) {
-  seniorToggle.addEventListener('change', function(e) {
-    if (appRoot) {
-      appRoot.classList.toggle('senior', e.target.checked);
-    }
+  // Sidebar toggle
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', function() {
+      const sidebar = document.querySelector('.sidebar');
+      const app = document.querySelector('.app');
+      if (sidebar && app) {
+        sidebar.classList.toggle('collapsed');
+        app.classList.toggle('sidebar-collapsed');
+        const nowCollapsed = sidebar.classList.contains('collapsed');
+        localStorage.setItem('sidebarCollapsed', nowCollapsed);
+        if (nowCollapsed) {
+          sidebarToggle.textContent = '▶';
+        } else {
+          sidebarToggle.textContent = '◀';
+        }
+      }
+    });
+  }
+
+  // Navigation handling
+  const navItems = document.querySelectorAll('.nav__item[data-href]');
+  navItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      const href = item.getAttribute('data-href');
+      if (href) {
+        location.href = href;
+      }
+    });
   });
-}
+
+  // Senior mode toggle
+  if (seniorToggle) {
+    seniorToggle.addEventListener('change', function(e) {
+      if (appRoot) {
+        appRoot.classList.toggle('senior', e.target.checked);
+      }
+    });
+  }
+});
