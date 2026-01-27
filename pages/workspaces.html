@@ -21,11 +21,12 @@
         <button class="sidebar__toggle" id="sidebarToggle" aria-label="Collapse sidebar">◀</button>
       </div>
       <nav class="nav">
-        <button class="nav__item" onclick="location.href='../index.html'">Dashboard</button>
+        <button class="nav__item" data-page="dashboard" onclick="location.href='../index.html'">Dashboard</button>
         <button class="nav__item active" data-page="workspaces">Workspaces</button>
-        <button class="nav__item" onclick="location.href='contextual-search.html'">Contextual Search</button>
-        <button class="nav__item" onclick="location.href='upload.html'">Upload</button>
-        <button class="nav__item" onclick="location.href='emotion-scan.html'">Emotion Scan</button>
+        <button class="nav__item" data-page="search" onclick="location.href='contextual-search.html'">Contextual Search</button>
+        <button class="nav__item" data-page="summarize" onclick="location.href='summarize.html'">Summarize</button>
+        <button class="nav__item" data-page="upload" onclick="location.href='upload.html'">Upload</button>
+        <button class="nav__item" data-page="emotion" onclick="location.href='emotion-scan.html'">Emotion Scan</button>
       </nav>
       <div class="sidebar__footer">
         <label class="toggle">

@@ -44,10 +44,11 @@
       </div>
       <nav class="nav">
         <button class="nav__item active" data-page="dashboard">Dashboard</button>
-        <button class="nav__item" onclick="location.href='pages/workspaces.html'">Workspaces</button>
-        <button class="nav__item" onclick="location.href='pages/contextual-search.html'">Contextual Search</button>
-        <button class="nav__item" onclick="location.href='pages/upload.html'">Upload</button>
-        <button class="nav__item" onclick="location.href='pages/emotion-scan.html'">Emotion Scan</button>
+        <button class="nav__item" data-page="workspaces" onclick="location.href='pages/workspaces.html'">Workspaces</button>
+        <button class="nav__item" data-page="search" onclick="location.href='pages/contextual-search.html'">Contextual Search</button>
+        <button class="nav__item" data-page="summarize" onclick="location.href='pages/summarize.html'">Summarize</button>
+        <button class="nav__item" data-page="upload" onclick="location.href='pages/upload.html'">Upload</button>
+        <button class="nav__item" data-page="emotion" onclick="location.href='pages/emotion-scan.html'">Emotion Scan</button>
       </nav>
       <div class="sidebar__footer">
         <label class="toggle">
@@ -108,6 +109,11 @@
               <div class="dashboard-icon">🔍</div>
               <h4>Contextual Search</h4>
               <p>Search by meaning, tone, or attachment types.</p>
+            </button>
+            <button class="dashboard-card" onclick="location.href='pages/summarize.html'">
+              <div class="dashboard-icon">📝</div>
+              <h4>Summarize</h4>
+              <p>Pick a chat, choose a topic, and set a date range.</p>
             </button>
             <button class="dashboard-card" onclick="location.href='pages/upload.html'">
               <div class="dashboard-icon">📤</div>
