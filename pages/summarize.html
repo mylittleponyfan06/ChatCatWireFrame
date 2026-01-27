@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatCat · Summarize</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="logo">🐱</div>
+        <div>
+          <p class="brand__name">ChatCat</p>
+          <p class="brand__meta">Whatsapp classifier</p>
+        </div>
+        <button class="sidebar__toggle" id="sidebarToggle" aria-label="Collapse sidebar">◀</button>
+      </div>
+      <nav class="nav">
+        <button class="nav__item" data-page="dashboard" onclick="location.href='../index.html'">Dashboard</button>
+        <button class="nav__item" data-page="workspaces" onclick="location.href='workspaces.html'">Workspaces</button>
+        <button class="nav__item" data-page="search" onclick="location.href='contextual-search.html'">Contextual Search</button>
+        <button class="nav__item active" data-page="summarize" onclick="location.href='summarize.html'">Summarize</button>
+        <button class="nav__item" data-page="upload" onclick="location.href='upload.html'">Upload</button>
+        <button class="nav__item" data-page="emotion" onclick="location.href='emotion-scan.html'">Emotion Scan</button>
+      </nav>
+      <div class="sidebar__footer">
+        <label class="toggle">
+          <input type="checkbox" id="seniorToggle" />
+          <span>Senior-friendly UI</span>
+        </label>
+        <div class="user">
+          <div class="avatar">CC</div>
+          <div>
+            <p class="user__name">Demo User</p>
+            <p class="user__meta">demo@chatcat.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="page active" id="page-summarize" data-page="summarize">
+        <header class="topbar">
+          <h2>Summarize Chats</h2>
+        </header>
+
+        <div class="stepper" id="summaryStepper">
+          <div class="step active" data-step="1">
+            <span class="step__num">1</span>
+            <span class="step__label">Choose chat</span>
+          </div>
+          <div class="step active" data-step="2">
+            <span class="step__num">2</span>
+            <span class="step__label">Set focus</span>
+          </div>
+          <div class="step" data-step="3">
+            <span class="step__num">3</span>
+            <span class="step__label">Summary assistant</span>
+          </div>
+        </div>
+
+        <section class="panel" id="summarizeSetup">
+          <div class="summarize-layout">
+            <div class="summarize-column">
+              <div class="panel__header">
+                <h3>Choose a chat</h3>
+                <p class="muted" style="margin: 0; font-size: 12px;">Previously imported WhatsApp exports</p>
+              </div>
+              <div class="chat-list" id="chatList"></div>
+            </div>
+
+            <div class="summarize-column">
+              <div class="panel__header">
+                <h3>Summary filters</h3>
+                <p class="muted" style="margin: 0; font-size: 12px;">Focus on a topic and date range</p>
+              </div>
+              <div class="summarize-form">
+                <div>
+                  <label for="topicInput">Topic to look out for (optional)</label>
+                  <input type="text" id="topicInput" placeholder="e.g. deadlines, invoices, meeting notes" />
+                  <p class="helper">Leave blank to summarize all messages.</p>
+                </div>
+                <div class="date-row">
+                  <div>
+                    <label for="dateFrom">From</label>
+                    <input type="date" id="dateFrom" />
+                  </div>
+                  <div>
+                    <label for="dateTo">To</label>
+                    <input type="date" id="dateTo" />
+                  </div>
+                </div>
+                <button class="primary" id="summarizeBtn">Generate summary</button>
+                <div class="summary-preview" id="summaryPreview">
+                  Select a chat to generate a summary preview.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="summarizeChat" style="display: none;">
+          <div class="panel__header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3>Summary Assistant</h3>
+              <p class="muted" id="summaryMeta" style="margin: 0; font-size: 12px;"></p>
+            </div>
+            <div class="summary-actions">
+              <button class="ghost" id="readAloudBtn">🔊 Read aloud</button>
+              <button class="ghost" id="backToSetupBtn">← Back</button>
+            </div>
+          </div>
+          <div class="chatbot-window">
+            <div class="chatbot-thread" id="chatbotThread"></div>
+            <div class="chatbot-input">
+              <input type="text" id="chatbotInput" placeholder="Ask for details, e.g. “show key decisions”" />
+              <button class="primary" id="chatbotSendBtn">Send</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="../script-shared.js"></script>
+  <script src="../pages-shared.js"></script>
+  <script>
+    const chats = [
+      { name: 'Sim Family GC', meta: 'Imported 2 days ago · 1,240 messages' },
+      { name: 'Client NYP Project', meta: 'Imported 4 days ago · 3,112 messages' },
+      { name: 'Church Group', meta: 'Imported 1 week ago · 842 messages' },
+      { name: 'Neighbourhood Watch', meta: 'Imported 3 weeks ago · 391 messages' }
+    ];
+
+    const chatList = document.getElementById('chatList');
+    const topicInput = document.getElementById('topicInput');
+    const dateFrom = document.getElementById('dateFrom');
+    const dateTo = document.getElementById('dateTo');
+    const summarizeBtn = document.getElementById('summarizeBtn');
+    const summaryPreview = document.getElementById('summaryPreview');
+    const summarizeSetup = document.getElementById('summarizeSetup');
+    const summarizeChat = document.getElementById('summarizeChat');
+    const summaryStepper = document.getElementById('summaryStepper');
+    const summaryMeta = document.getElementById('summaryMeta');
+    const chatbotThread = document.getElementById('chatbotThread');
+    const chatbotInput = document.getElementById('chatbotInput');
+    const chatbotSendBtn = document.getElementById('chatbotSendBtn');
+    const backToSetupBtn = document.getElementById('backToSetupBtn');
+    const readAloudBtn = document.getElementById('readAloudBtn');
+
+    let selectedIndex = -1;
+    let isReading = false;
+
+    function setStepper(stage) {
+      if (!summaryStepper) return;
+      const steps = summaryStepper.querySelectorAll('.step');
+      steps.forEach(function(step) {
+        step.classList.remove('active');
+        step.classList.remove('done');
+      });
+      if (stage === 'chat') {
+        if (steps[0]) steps[0].classList.add('done');
+        if (steps[1]) steps[1].classList.add('done');
+        if (steps[2]) steps[2].classList.add('active');
+      } else {
+        if (steps[0]) steps[0].classList.add('active');
+        if (steps[1]) steps[1].classList.add('active');
+      }
+    }
+
+    function renderChats() {
+      if (!chatList) return;
+      chatList.innerHTML = '';
+      chats.forEach(function(chat, index) {
+        const item = document.createElement('div');
+        item.className = 'chat-card' + (index === selectedIndex ? ' active' : '');
+        item.innerHTML = '<p class="chat-card-title">' + chat.name + '</p><p class="chat-card-meta">' + chat.meta + '</p>';
+        item.addEventListener('click', function() {
+          selectedIndex = index;
+          renderChats();
+          summaryPreview.textContent = 'Selected: ' + chat.name + '. Add a topic or leave it empty to summarize everything.';
+        });
+        chatList.appendChild(item);
+      });
+    }
+
+    function formatRange(fromValue, toValue) {
+      if (fromValue && toValue) return fromValue + ' → ' + toValue;
+      if (fromValue) return 'From ' + fromValue;
+      if (toValue) return 'Up to ' + toValue;
+      return 'All time';
+    }
+
+    function setLoading(isLoading) {
+      if (!summarizeBtn) return;
+      summarizeBtn.disabled = isLoading;
+      summarizeBtn.classList.toggle('is-loading', isLoading);
+      summarizeBtn.textContent = isLoading ? 'Generating…' : 'Generate summary';
+    }
+
+    function clearDateErrors() {
+      dateFrom.classList.remove('input-error');
+      dateTo.classList.remove('input-error');
+    }
+
+    function validateDateRange() {
+      clearDateErrors();
+      if (dateFrom.value && dateTo.value && dateFrom.value > dateTo.value) {
+        dateFrom.classList.add('input-error');
+        dateTo.classList.add('input-error');
+        toast('Start date must be before end date.');
+        return false;
+      }
+      return true;
+    }
+
+
+    function appendBotMessage(html) {
+      if (!chatbotThread) return;
+      const node = document.createElement('div');
+      node.className = 'chatbot-message bot';
+      node.innerHTML = html;
+      chatbotThread.appendChild(node);
+      chatbotThread.scrollTop = chatbotThread.scrollHeight;
+    }
+
+    function appendUserMessage(text) {
+      if (!chatbotThread) return;
+      const node = document.createElement('div');
+      node.className = 'chatbot-message user';
+      node.textContent = text;
+      chatbotThread.appendChild(node);
+      chatbotThread.scrollTop = chatbotThread.scrollHeight;
+    }
+
+    function renderSummaryChat() {
+      const chat = chats[selectedIndex];
+      const topic = topicInput.value.trim();
+      const range = formatRange(dateFrom.value, dateTo.value);
+      const topicLabel = topic ? 'Topic: ' + topic : 'Topic: All messages';
+      if (summaryMeta) {
+        summaryMeta.textContent = chat.name + ' · ' + range + ' · ' + topicLabel;
+      }
+      if (chatbotThread) {
+        chatbotThread.innerHTML = '';
+      }
+      appendBotMessage('<p style="margin: 0 0 6px; font-weight: 600; color: var(--text);">Summary ready</p>' +
+        '<p style="margin: 0 0 10px; font-size: 12px; color: var(--muted);">' + topicLabel + '</p>' +
+        '<ul style="margin: 0; padding-left: 18px; color: var(--muted); font-size: 12px; line-height: 1.6;">' +
+        '<li>Key themes were grouped into 3 clusters.</li>' +
+        '<li>Most active participants: Demo User, Kai, Jasmine.</li>' +
+        '<li>Action items appeared most often in the last 7 days.</li>' +
+        '</ul>');
+      appendBotMessage('<p style="margin: 0; font-size: 12px; color: var(--muted);">Ask for details like “show key decisions” or “list unanswered questions”.</p>');
+    }
+
+    function handleGenerateSummary() {
+      if (selectedIndex < 0) {
+        toast('Select a chat to summarize.');
+        return;
+      }
+      if (!validateDateRange()) {
+        return;
+      }
+      const range = formatRange(dateFrom.value, dateTo.value);
+      const chat = chats[selectedIndex];
+      const topic = topicInput.value.trim();
+      const topicLine = topic ? 'Topic: ' + topic : 'Topic: All messages';
+      summaryPreview.innerHTML = '<p style="margin: 0 0 6px; font-weight: 600; color: var(--text);">Summary ready</p>' +
+        '<p style="margin: 0; font-size: 12px; color: var(--muted);">Chat: ' + chat.name + ' · ' + range + ' · ' + topicLine + '</p>';
+      setLoading(true);
+      setTimeout(function() {
+        setLoading(false);
+        if (summarizeSetup && summarizeChat) {
+          summarizeSetup.style.display = 'none';
+          summarizeChat.style.display = 'block';
+        }
+        setStepper('chat');
+        renderSummaryChat();
+        toast('Summary generated for "' + chat.name + '"');
+      }, 700);
+    }
+
+    if (summarizeBtn) {
+      summarizeBtn.addEventListener('click', handleGenerateSummary);
+    }
+
+    function handleSendQuestion() {
+      const text = chatbotInput ? chatbotInput.value.trim() : '';
+      if (!text) {
+        toast('Type a question to continue.');
+        return;
+      }
+      appendUserMessage(text);
+      const response = 'Here are more details about "' + text + '". I can also break it down by participant or date if needed.';
+      appendBotMessage('<p style="margin: 0; font-size: 12px; color: var(--muted);">' + response + '</p>');
+      chatbotInput.value = '';
+    }
+
+    if (chatbotSendBtn) {
+      chatbotSendBtn.addEventListener('click', handleSendQuestion);
+    }
+
+    if (chatbotInput) {
+      chatbotInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') handleSendQuestion();
+      });
+    }
+
+    if (backToSetupBtn) {
+      backToSetupBtn.addEventListener('click', function() {
+        if (summarizeSetup && summarizeChat) {
+          summarizeSetup.style.display = 'block';
+          summarizeChat.style.display = 'none';
+        }
+        setStepper('setup');
+      });
+    }
+
+    if (readAloudBtn) {
+      readAloudBtn.addEventListener('click', function() {
+        isReading = !isReading;
+        readAloudBtn.textContent = isReading ? '⏹ Stop reading' : '🔊 Read aloud';
+        toast(isReading ? 'Read aloud started.' : 'Read aloud stopped.');
+      });
+    }
+
+    setStepper('setup');
+
+    renderChats();
+  </script>
+</body>
+</html>
