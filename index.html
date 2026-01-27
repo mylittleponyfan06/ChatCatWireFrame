@@ -93,12 +93,30 @@
         </header>
         <section class="hero">
           <div>
+            <p class="eyebrow">Next best action</p>
             <h1>Organize your WhatsApp conversations</h1>
             <p class="muted">ChatCat helps you tag, search, and understand your chats with AI-powered features.</p>
+            <div class="hero__cta">
+              <button class="primary" onclick="location.href='pages/upload.html'">Upload chat export</button>
+              <button class="ghost" onclick="location.href='pages/summarize.html'">Summarize</button>
+            </div>
+          </div>
+          <div class="hero__side">
+            <div class="hero__panel">
+              <h3>Start in 3 steps</h3>
+              <ol class="hero__steps">
+                <li>Upload your WhatsApp export</li>
+                <li>Pick a chat and date range</li>
+                <li>Review the summary assistant</li>
+              </ol>
+            </div>
           </div>
         </section>
         <section class="panel">
-          <h3>Quick access</h3>
+          <div class="panel__header">
+            <h3>Quick access</h3>
+            <span class="muted" style="font-size: 12px;">Jump into a feature</span>
+          </div>
           <div class="dashboard-grid">
             <button class="dashboard-card" onclick="location.href='pages/workspaces.html'">
               <div class="dashboard-icon">📁</div>

@@ -332,6 +332,32 @@ body {
   box-shadow: var(--shadow);
 }
 
+.hero__side {
+  display: flex;
+  align-items: stretch;
+}
+
+.hero__panel {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+}
+
+.hero__panel h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.hero__steps {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .eyebrow { margin: 0; color: var(--muted); font-size: 14px; letter-spacing: 0.5px; }
 .hero h1 { margin: 6px 0 8px; font-size: 28px; }
 .hero__cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
@@ -460,6 +486,11 @@ button.primary {
   padding: 12px 16px;
   border-radius: 12px;
   cursor: pointer;
+}
+
+button.primary.is-loading {
+  opacity: 0.7;
+  cursor: wait;
 }
 button.secondary {
   background: transparent;
@@ -637,6 +668,56 @@ button.block { width: 100%; margin-top: 10px; }
   color: var(--muted);
 }
 
+.helper {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.stepper {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.step__num {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(88, 198, 255, 0.15);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.step.active {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.step.done {
+  border-color: rgba(106, 228, 184, 0.6);
+  color: var(--text);
+}
+
+.step.done .step__num {
+  background: rgba(106, 228, 184, 0.25);
+}
+
 .summarize-form input[type="text"],
 .summarize-form input[type="date"] {
   width: 100%;
@@ -645,6 +726,11 @@ button.block { width: 100%; margin-top: 10px; }
   border: 1px solid var(--border);
   background: var(--panel-strong);
   color: var(--text);
+}
+
+.input-error {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 2px rgba(255, 111, 97, 0.2);
 }
 
 .date-row {
@@ -661,6 +747,7 @@ button.block { width: 100%; margin-top: 10px; }
   font-size: 13px;
   color: var(--muted);
 }
+
 
 .summary-actions {
   display: flex;
@@ -1238,6 +1325,8 @@ button.block { width: 100%; margin-top: 10px; }
 }
 .senior .hero h1 { font-size: 36px; line-height: 1.2; }
 .senior .hero p { font-size: 20px; }
+.senior .hero__panel h3 { font-size: 22px; }
+.senior .hero__steps { font-size: 18px; }
 .senior h3 { font-size: 28px; }
 .senior h4 { font-size: 24px; }
 .senior .dashboard-card { padding: 40px; font-size: 22px; min-height: 200px; }
@@ -1250,6 +1339,15 @@ button.block { width: 100%; margin-top: 10px; }
 .senior .emotion__item { border-radius: 24px; }
 .senior input, .senior textarea { padding: 16px; font-size: 18px; border-radius: 16px; }
 .senior .primary, .senior .ghost { padding: 16px 32px; font-size: 20px; border-radius: 16px; }
+.senior .stepper { gap: 14px; }
+.senior .step { font-size: 16px; padding: 12px 16px; }
+.senior .step__num { width: 26px; height: 26px; font-size: 14px; }
+.senior button:focus-visible,
+.senior input:focus-visible,
+.senior .nav__item:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
 .senior button.primary {
   background: #7dd3ff;
   color: #0b0c10;
